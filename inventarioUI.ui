@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>windowProductos</class>
+ <widget class="QWidget" name="windowProductos">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1350</width>
+    <height>692</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Verdana</family>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Productos</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/Foto de Jebus.jpg</normaloff>icons/Foto de Jebus.jpg</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+	background-color:rgb(204, 198, 199)
+}
+QTableWidget{
+	background-color: rgb(238, 232, 233)
+}
+QLineEdit{
+	background-color: white
+}
+QPushButton{
+	background-color:rgb(144, 156, 186)
+}</string>
+  </property>
+  <widget class="QTableWidget" name="tablaproductos">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1011</width>
+     <height>671</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <column>
+    <property name="text">
+     <string>Código</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Producto</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Grupo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Stock mínimo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Stock máximo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Existencia</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1037</x>
+     <y>340</y>
+     <width>301</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_9">
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Productos en stock mínimo</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTableWidget" name="tablestockminimo">
+      <column>
+       <property name="text">
+        <string>Producto</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Stock min</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Existencia</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1037</x>
+     <y>240</y>
+     <width>271</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QPushButton" name="botonagregar">
+      <property name="text">
+       <string>Agregar</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/plus_circle_new_create_icon_145948.png</normaloff>icons/plus_circle_new_create_icon_145948.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="botoneditar">
+      <property name="text">
+       <string>Editar</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="botoneliminar">
+      <property name="text">
+       <string>Eliminar</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/trash_remove_icon_145922.png</normaloff>icons/trash_remove_icon_145922.png</iconset>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1307</x>
+     <y>240</y>
+     <width>31</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <property name="spacing">
+     <number>5</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="botonayudaadd">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="botonayudaedit">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="botonayudadelete">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1037</x>
+     <y>12</y>
+     <width>301</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="busqueda">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="botonbuscar">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>icons/searchmagnifierinterfacesymbol1_79893.png</normaloff>icons/searchmagnifierinterfacesymbol1_79893.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Código</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="codigo">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Producto*</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="producto">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Grupo</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="grupo"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Descuento (%)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="descuento">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Incremento (%)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="incremento">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Precio Compra</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="preciocompra">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Existencia</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="existencia">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <zorder>layoutWidget</zorder>
+  <zorder>tablaproductos</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+ </widget>
+ <tabstops>
+  <tabstop>busqueda</tabstop>
+  <tabstop>botonbuscar</tabstop>
+  <tabstop>codigo</tabstop>
+  <tabstop>producto</tabstop>
+  <tabstop>grupo</tabstop>
+  <tabstop>descuento</tabstop>
+  <tabstop>incremento</tabstop>
+  <tabstop>preciocompra</tabstop>
+  <tabstop>existencia</tabstop>
+  <tabstop>tablaproductos</tabstop>
+  <tabstop>botonagregar</tabstop>
+  <tabstop>botonayudaadd</tabstop>
+  <tabstop>botoneditar</tabstop>
+  <tabstop>botonayudaedit</tabstop>
+  <tabstop>botoneliminar</tabstop>
+  <tabstop>botonayudadelete</tabstop>
+  <tabstop>tablestockminimo</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

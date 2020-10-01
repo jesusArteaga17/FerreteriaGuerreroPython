@@ -17,7 +17,7 @@ class Conexion():
             cursor.execute("select * from productos")
             resultado=[]
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','descuento','incremento','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
             con.close()
             return (resultado)
         else:
@@ -30,7 +30,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','descuento','incremento','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
+                    ['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
             con.close()
             return (resultado)
         else:
@@ -40,9 +40,9 @@ class Conexion():
         if con != False:
             cursor=con.cursor()
             cursor.execute(
-                "INSERT  INTO productos (codigo,producto,grupo,descuento,incremento,preciocompra,existencia,preciopublico)VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                (producto['codigo'],producto['producto'],producto['grupo'],producto['descuento'],producto['incremento'],
-                 producto['preciocompra'],producto['existencia'],producto['preciopublico']))
+                "INSERT  INTO productos (codigo,producto,grupo,utilidades,preciocompra,stock,preciopublico)VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                (producto['codigo'],producto['producto'],producto['grupo'],producto['utilidades'],
+                 producto['preciocompra'],producto['stock'],producto['preciopublico']))
             # Guardar cambios.
             con.commit()
             id=cursor.lastrowid
@@ -55,8 +55,8 @@ class Conexion():
         if con!=False:
             cursor=con.cursor()
             cursor.execute(
-                "UPDATE `productos` SET `codigo` = %s, `producto` = %s, `grupo` = %s, `descuento` = %s, `incremento` = %s, `preciocompra` = %s, `existencia` = %s, `preciopublico` = %s WHERE `productos`.`codigo` = "+str(codigo),
-                (producto['codigo'], producto['producto'], producto['grupo'], producto['descuento'], producto['incremento'],producto['preciocompra'], producto['existencia'], producto['preciopublico']))
+                "UPDATE `productos` SET `codigo` = %s, `producto` = %s, `grupo` = %s, `utilidades` = %s, `preciocompra` = %s, `stock` = %s, `preciopublico` = %s WHERE `productos`.`codigo` = "+str(codigo),
+                (producto['codigo'], producto['producto'], producto['grupo'], producto['utilidades'],producto['preciocompra'], producto['stock'], producto['preciopublico']))
             con.commit()
             con.close()
             return True
@@ -90,10 +90,10 @@ class Conexion():
         con = self.conect()
         if con!=False:
             cursor = con.cursor()
-            cursor.execute("SELECT * FROM `productos` WHERE existencia<=stockminimo")
+            cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo")
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','descuento','incremento','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock'], producto)))
             con.close()
             return (resultado)
         else:
@@ -118,11 +118,9 @@ class Conexion():
                 ['id', 'nombre', 'apellidos', 'numcontrol', 'telefono', 'correo'], producto)))
         con.close()
         return (resultado)
-
-
 if __name__=="__main__":
     con=Conexion()
     #producto={'codigo':'26749433','producto':"basinilla",'descuento':'7','stockminimo':'23','stockmaximo':'50','precio':'67.7','existencia':'24','grupo':'basinillas'       }
     #p=con.AddProduct(producto)
-    producto={'codigo': '7623', 'producto': 'yanobandera', 'grupo': '', 'descuento': '0.0', 'incremento': '0.0', 'preciocompra': '0.0', 'existencia': '0.0', 'preciopublico': '0.0'}
-    print (con.UpdateProduct(7623,producto))
+    producto={'codigo': '3827', 'producto': 'yanobandera', 'grupo': '', 'utilidades': '0.0', 'preciocompra': '0.0', 'stock': '0.0', 'preciopublico': '0.0'}
+    print (con.AddProduct(producto))

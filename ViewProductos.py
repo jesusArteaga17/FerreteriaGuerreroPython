@@ -33,14 +33,14 @@ class ViewProductos(QDialog):
         self.codigo.returnPressed.connect(self.agrega)
         self.producto.textChanged.connect(self.valProducto)
         self.producto.returnPressed.connect(self.agrega)
-        self.descuento.textChanged.connect(self.valDescuento)
-        self.descuento.returnPressed.connect(self.agrega)
-        self.incremento.textChanged.connect(self.valIncremento)
-        self.incremento.returnPressed.connect(self.agrega)
+        self.grupo.textChanged.connect(self.validaGrupo)
+        self.grupo.returnPressed.connect(self.agrega)
+        self.utilidades.textChanged.connect(self.valIncremento)
+        self.utilidades.returnPressed.connect(self.agrega)
         self.preciocompra.textChanged.connect(self.valPreciocompra)
         self.preciocompra.returnPressed.connect(self.agrega)
-        self.existencia.textChanged.connect(self.valExistencia)
-        self.existencia.returnPressed.connect(self.agrega)
+        self.stock.textChanged.connect(self.valExistencia)
+        self.stock.returnPressed.connect(self.agrega)
         self.busqueda.textChanged.connect(self.buscar)
         self.busqueda.setFocus()
         #Inicialización de los eventos de la tabla
@@ -53,9 +53,8 @@ class ViewProductos(QDialog):
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de productos
-        self.inputs = [self.codigo, self.producto, self.grupo, self.descuento, self.incremento,self.preciocompra,self.existencia]
+        self.inputs = [self.codigo, self.producto, self.grupo, self.utilidades,self.preciocompra,self.stock]
         self.RefreshTableData()
         #Definiendo los atajos
         shortcut1 = QShortcut(QtGui.QKeySequence("Ctrl+b"), self)
@@ -68,19 +67,26 @@ class ViewProductos(QDialog):
         shortcut5.activated.connect(self.close)
     def agrega(self):
         if self.valida_formulario("agrega"):
-            opc = confirm(text="Desea agregar " + str(self.producto.text()) + "?", title="Agregar)",
+            opc = confirm(text="Desea agregar " + str(self.producto.text()) + "?", title="Agregar?",
                           buttons=["OK", "CANCEL"])
             if opc == "OK":
                 producto = {}
                 producto['codigo'] = self.codigo.text()
                 producto['producto'] = self.producto.text()
                 producto['grupo'] = self.grupo.text()
-                producto['descuento'] = self.descuento.text()
-                producto['incremento'] = self.incremento.text()
-                producto['preciocompra'] = self.preciocompra.text()
-                producto['existencia'] = self.existencia.text()
-                preciopublico=float(self.preciocompra.text())+float(self.preciocompra.text())*(float(self.incremento.text())/100)
-                producto['preciopublico'] = str(preciopublico -float(self.descuento.text())/100*preciopublico)
+                if self.utilidades.text()!="":
+                    producto['utilidades'] = self.utilidades.text()
+                else:
+                    producto['utilidades']="0"
+                if self.preciocompra.text()!="":
+                    producto['preciocompra'] = self.preciocompra.text()
+                else:
+                    producto['preciocompra']="0"
+                if self.stock.text()!="":
+                    producto['stock'] = self.stock.text()
+                else:
+                    producto['stock']="0"
+                producto['preciopublico'] =str(float(producto["preciocompra"])+float(producto["preciocompra"])*(float(producto["utilidades"])/100))
                 if self.codigo.text() != "":
                     productoexist = self.con.GetProductByCode(self.codigo.text())
                     if productoexist != False:
@@ -111,10 +117,9 @@ class ViewProductos(QDialog):
                         self.tablaproductos.setItem(rowPosition, 0, QTableWidgetItem(newcode))
                         self.tablaproductos.setItem(rowPosition, 1, QTableWidgetItem(producto["producto"]))
                         self.tablaproductos.setItem(rowPosition, 2, QTableWidgetItem(producto["grupo"]))
-                        self.tablaproductos.setItem(rowPosition, 3, QTableWidgetItem(producto["descuento"]))
-                        self.tablaproductos.setItem(rowPosition, 4, QTableWidgetItem(producto["incremento"]))
-                        self.tablaproductos.setItem(rowPosition, 5, QTableWidgetItem(producto["preciocompra"]))
-                        self.tablaproductos.setItem(rowPosition, 6, QTableWidgetItem(producto["preciopublico"]))
+                        self.tablaproductos.setItem(rowPosition, 3, QTableWidgetItem(producto["utilidades"]))
+                        self.tablaproductos.setItem(rowPosition, 4, QTableWidgetItem(producto["preciocompra"]))
+                        self.tablaproductos.setItem(rowPosition, 5, QTableWidgetItem(producto["preciopublico"]))
                         for i in range(len(self.inputs)):
                             self.inputs[i].setText("")
                         self.RefreshTableStockmin()
@@ -134,13 +139,10 @@ class ViewProductos(QDialog):
                     producto['codigo'] = self.codigo.text()
                     producto['producto'] = self.producto.text()
                     producto['grupo'] = self.grupo.text()
-                    producto['descuento'] = self.descuento.text()
-                    producto['incremento'] = self.incremento.text()
+                    producto['utilidades'] = self.utilidades.text()
                     producto['preciocompra'] = self.preciocompra.text()
-                    producto['existencia'] = self.existencia.text()
-                    preciopublico = float(self.preciocompra.text()) + float(self.preciocompra.text()) * (
-                    float(self.incremento.text()) / 100)
-                    producto['preciopublico'] = str(preciopublico - float(self.descuento.text()) / 100 * preciopublico)
+                    producto['stock'] = self.stock.text()
+                    producto['preciopublico'] = str(float(producto["preciocompra"])+float(producto["preciocompra"])*(float(producto["utilidades"])/100))
                     if self.codigo.text()!=codigo_ant:
                         productexist = self.con.GetProductByCode(self.codigo.text())
                         if productexist != False:
@@ -170,7 +172,7 @@ class ViewProductos(QDialog):
     def elimina(self):
         try:
             row = self.tablaproductos.currentRow()
-            opc=confirm(text="Desea Eliminar "+str(self.tablaproductos.item(row,1).text())+"?",title="Eliminar??",buttons=["OK","CANCEL"])
+            opc=confirm(text="Desea eliminar "+str(self.tablaproductos.item(row,1).text())+"?",title="Eliminar?",buttons=["OK","CANCEL"])
             if opc=="OK":
                 codigo=self.tablaproductos.item(row, 0).text()
                 if self.con.DeleteProduct(codigo)!=False:
@@ -193,24 +195,24 @@ class ViewProductos(QDialog):
             #col=self.tablaproductos.currentColumn()
             for i in range(len(self.inputs)-1):
                 self.inputs[i].setText(self.tablaproductos.item(row,i).text())
-            self.inputs[-1].setText(str(self.productos[row]["existencia"]))
+            self.inputs[-1].setText(str(self.productos[row]["stock"]))
         except:
             pass
     def valida_formulario(self,accion):
         if accion=="agrega":
             if self.codigo.text()!="":
-                if self.valCodigo()and  self.valDescuento() and self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
+                if self.valCodigo() and self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
                     return True
                 else:
                     return False
             else:
-                if self.valDescuento() and self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
+                if  self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
                     return True
                 else:
                     return False
         else:
             if self.codigo.text()!="":
-                if self.valCodigo() and self.valDescuento() and self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
+                if self.valCodigo()  and self.valExistencia() and self.valPreciocompra() and self.valProducto() and self.valIncremento():
                     return True
                 else:
                     return False
@@ -226,65 +228,55 @@ class ViewProductos(QDialog):
         return res
     def valProducto(self):
         input = self.producto
-        if input.text()!="":
+        validacion=self.valida.valida50Caracteres(input.text())
+        if validacion and self.producto.text()!="":
             input.setStyleSheet(self.trueValidate)
             return True
         else:
             input.setStyleSheet(self.falseValidate)
             return False
-    def valDescuento(self):
-        input = self.descuento
-        res = self.valida.validaDecimal(input.text())
-        if res:
+    def validaGrupo(self):
+        input = self.grupo
+        validacion = self.valida.valida50Caracteres(input.text())
+        if validacion:
             input.setStyleSheet(self.trueValidate)
+            return True
         else:
             input.setStyleSheet(self.falseValidate)
-        return res
-    def valStockminimo(self):
-        input = self.stockminimo
-        res = self.valida.validaNumero(input.text())
-        if res:
-            input.setStyleSheet(self.trueValidate)
-        else:
-            input.setStyleSheet(self.falseValidate)
-        return res
-    def valStockmaximo(self):
-        input = self.stockmaximo
-        res = self.valida.validaNumero(input.text())
-        if res:
-            input.setStyleSheet(self.trueValidate)
-        else:
-            input.setStyleSheet(self.falseValidate)
-        return res
+            return False
     def valExistencia(self):
-        input = self.existencia
-        res = self.valida.validaDecimal(input.text())
+        input = self.stock
+        res = self.valida.valida20Caracteres(input.text())
         if res:
-            input.setStyleSheet(self.trueValidate)
-        else:
-            input.setStyleSheet(self.falseValidate)
-        return res
-    def valPrecio(self):
-        input = self.precio
-        res = self.valida.validaDecimal(input.text())
-        if res:
-            input.setStyleSheet(self.trueValidate)
+            res = self.valida.validaDecimal(input.text())
+            if res:
+                input.setStyleSheet(self.trueValidate)
+            else:
+                input.setStyleSheet(self.falseValidate)
         else:
             input.setStyleSheet(self.falseValidate)
         return res
     def valIncremento(self):
-        input = self.incremento
-        res = self.valida.validaDecimal(input.text())
+        input = self.utilidades
+        res = self.valida.valida20Caracteres(input.text())
         if res:
-            input.setStyleSheet(self.trueValidate)
+            res = self.valida.validaDecimal(input.text())
+            if res:
+                input.setStyleSheet(self.trueValidate)
+            else:
+                input.setStyleSheet(self.falseValidate)
         else:
             input.setStyleSheet(self.falseValidate)
         return res
     def valPreciocompra(self):
         input = self.preciocompra
-        res = self.valida.validaDecimal(input.text())
+        res = self.valida.valida20Caracteres(input.text())
         if res:
-            input.setStyleSheet(self.trueValidate)
+            res = self.valida.validaDecimal(input.text())
+            if res:
+                input.setStyleSheet(self.trueValidate)
+            else:
+                input.setStyleSheet(self.falseValidate)
         else:
             input.setStyleSheet(self.falseValidate)
         return res
@@ -301,8 +293,7 @@ class ViewProductos(QDialog):
                 self.tablaproductos.setItem(i,0, QTableWidgetItem( str(productos[i]['codigo'])))
                 self.tablaproductos.setItem(i, 1, QTableWidgetItem(str(productos[i]['producto'])))
                 self.tablaproductos.setItem(i, 2, QTableWidgetItem(str(productos[i]['grupo'])))
-                self.tablaproductos.setItem(i, 3, QTableWidgetItem(str(productos[i]['descuento'])))
-                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(productos[i]['incremento'])))
+                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(productos[i]['utilidades'])))
                 self.tablaproductos.setItem(i, 5, QTableWidgetItem(str(productos[i]['preciocompra'])))
                 self.tablaproductos.setItem(i, 6, QTableWidgetItem(str(productos[i]['preciopublico'])))
             self.RefreshTableStockmin()
@@ -318,7 +309,7 @@ class ViewProductos(QDialog):
             self.tablestockminimo.insertRow(i)
             self.tablestockminimo.setItem(i, 0, QTableWidgetItem(str(productos[i]['producto'])))
             self.tablestockminimo.setItem(i, 1, QTableWidgetItem(str(productos[i]['stockminimo'])))
-            self.tablestockminimo.setItem(i, 2, QTableWidgetItem(str(productos[i]['existencia'])))
+            self.tablestockminimo.setItem(i, 2, QTableWidgetItem(str(productos[i]['stock'])))
     def ayudaAgregar(self):
         alert(title="Ayuda",text="Para agregar un producto \n"
                                  "1.- Llenar el formulario (basta con agregar solo el producto\n"
@@ -353,8 +344,7 @@ class ViewProductos(QDialog):
                 self.tablaproductos.setItem(i, 0, QTableWidgetItem(str(self.productos[coincidencias[i]]['codigo'])))
                 self.tablaproductos.setItem(i, 1, QTableWidgetItem(str(self.productos[coincidencias[i]]['producto'])))
                 self.tablaproductos.setItem(i, 2, QTableWidgetItem(str(self.productos[coincidencias[i]]['grupo'])))
-                self.tablaproductos.setItem(i, 3, QTableWidgetItem(str(self.productos[coincidencias[i]]['descuento'])))
-                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(self.productos[coincidencias[i]]['incremento'])))
+                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(self.productos[coincidencias[i]]['utilidades'])))
                 self.tablaproductos.setItem(i, 5, QTableWidgetItem(str(self.productos[coincidencias[i]]['preciocompra'])))
                 self.tablaproductos.setItem(i, 6, QTableWidgetItem(str(self.productos[coincidencias[i]]['preciopublico'])))
         else:
@@ -364,8 +354,12 @@ class ViewProductos(QDialog):
     def setFocusBuscar(self):
         self.busqueda.setText("")
         self.busqueda.setFocus()
-if __name__=="__main__":
+"""if __name__=="__main__":
     app = QApplication(sys.argv)
     gui = ViewProductos()
     gui.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec())"""
+app = QApplication(sys.argv)
+gui = ViewProductos()
+gui.show()
+sys.exit(app.exec())

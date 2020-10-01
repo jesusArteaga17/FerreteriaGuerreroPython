@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QPushButton, QLa
 from PyQt5 import uic
 from ViewProductos import ViewProductos
 import sys
-class AdminView(QMainWindow):
+class Index(QMainWindow):
     formValid=False
 
     def __init__(self):
@@ -14,6 +14,6 @@ class AdminView(QMainWindow):
         view.show()
 if __name__=="__main__":
     app=QApplication(sys.argv)
-    gui = AdminView()
+    gui = Index()
     gui.show()
     sys.exit(app.exec())

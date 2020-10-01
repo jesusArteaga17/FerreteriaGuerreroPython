@@ -71,12 +71,7 @@ QPushButton{
    </column>
    <column>
     <property name="text">
-     <string>Descuento (%)</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Incremento (%)</string>
+     <string>Utilidades (%)</string>
     </property>
    </column>
    <column>
@@ -306,56 +301,42 @@ QPushButton{
        <widget class="QLineEdit" name="grupo"/>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Descuento (%)</string>
+         <string>Utilidades (%)</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="descuento">
+       <widget class="QLineEdit" name="utilidades">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Incremento (%)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="incremento">
-        <property name="text">
-         <string>0</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Precio Compra</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="4" column="1">
        <widget class="QLineEdit" name="preciocompra">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Existencia</string>
+         <string>Stock</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="existencia">
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="stock">
         <property name="text">
          <string>0</string>
         </property>
@@ -377,10 +358,9 @@ QPushButton{
   <tabstop>codigo</tabstop>
   <tabstop>producto</tabstop>
   <tabstop>grupo</tabstop>
-  <tabstop>descuento</tabstop>
-  <tabstop>incremento</tabstop>
+  <tabstop>utilidades</tabstop>
   <tabstop>preciocompra</tabstop>
-  <tabstop>existencia</tabstop>
+  <tabstop>stock</tabstop>
   <tabstop>tablaproductos</tabstop>
   <tabstop>botonagregar</tabstop>
   <tabstop>botonayudaadd</tabstop>
