@@ -118,9 +118,158 @@ class Conexion():
                 ['id', 'nombre', 'apellidos', 'numcontrol', 'telefono', 'correo'], producto)))
         con.close()
         return (resultado)
+
+    def AllProveedores(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("select * from proveedores")
+            resultado = []
+            for proveedor in cursor.fetchall():
+                resultado.append(dict(zip(
+                    ['id', 'nombre', 'telefono', 'direccion'], proveedor)))
+            con.close()
+            return (resultado)
+        else:
+            return False
+    def AddProveedor(self,proveedor):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "INSERT  INTO proveedores (nombre,telefono,direccion)VALUES (%s,%s,%s)",
+                (proveedor['nombre'],proveedor['telefono'],proveedor['direccion']))
+            # Guardar cambios.
+            con.commit()
+            id = cursor.lastrowid
+            con.close()
+            return id
+        else:
+            return False
+    def UpdateProveedor(self,id,proveedor):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "UPDATE `proveedores` SET `nombre` = %s, `telefono` = %s, `direccion` = %s WHERE `proveedores`.`id` = " + str(
+                    id),
+                (proveedor['nombre'],proveedor['telefono'],proveedor['direccion']))
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
+    def DeleteProveedor(self,id):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("DELETE FROM `proveedores` WHERE `proveedores`.`id` = " + str(id))
+            # Guardar cambios.
+            con.commit()
+            return True
+        else:
+            return False
+
+    def AllEvents(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM `eventos`")
+            resultado = []
+            for evento in cursor.fetchall():
+                resultado.append(dict(zip(
+                    ['id', 'proveedor', 'dia', 'hora', 'descripcion'],evento)))
+            con.close()
+            return (resultado)
+        else:
+            return False
+    def TodayEvents(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM `eventos` where eventos.dia=CURDATE()")
+            resultado = []
+            for evento in cursor.fetchall():
+                resultado.append(dict(zip(
+                    ['id', 'proveedor', 'dia', 'hora', 'descripcion'], evento)))
+            con.close()
+            return (resultado)
+        else:
+            return False
+    def FutureEvents(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM `eventos` where eventos.dia>CURDATE()")
+            resultado = []
+            for evento in cursor.fetchall():
+                resultado.append(dict(zip(
+                    ['id', 'proveedor', 'dia', 'hora', 'descripcion'], evento)))
+            con.close()
+            return (resultado)
+        else:
+            return False
+    def DeleteEvent(self,id):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            try:
+                cursor.execute("DELETE FROM `eventos` WHERE `eventos`.`id` = " + str(id))
+            except:
+                return None
+            # Guardar cambios.
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
+    def DeleteEventProveedor(self,proveedor):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            try:
+                cursor.execute("DELETE FROM `eventos` WHERE `eventos`.`proveedor` = " + str(proveedor))
+            except:
+                return None
+            # Guardar cambios.
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
+    def DeletePastEvents(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            result =cursor.execute("DELETE FROM `eventos` WHERE `eventos`.`dia` <CURDATE()")
+            con.commit()
+            con.close()
+        else:
+            return False
+    def AddEvent(self,evento):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "INSERT  INTO eventos (proveedor,dia,hora,descripcion)VALUES (%s,%s,%s,%s)",
+                (evento['proveedor'], evento['dia'], evento['hora'],evento['descripcion']))
+            # Guardar cambios.
+            con.commit()
+            id = cursor.lastrowid
+            con.close()
+            return id
+        else:
+            return False
 if __name__=="__main__":
     con=Conexion()
     #producto={'codigo':'26749433','producto':"basinilla",'descuento':'7','stockminimo':'23','stockmaximo':'50','precio':'67.7','existencia':'24','grupo':'basinillas'       }
     #p=con.AddProduct(producto)
-    producto={'codigo': '3827', 'producto': 'yanobandera', 'grupo': '', 'utilidades': '0.0', 'preciocompra': '0.0', 'stock': '0.0', 'preciopublico': '0.0'}
-    print (con.AddProduct(producto))
+    #producto={'codigo': '3827', 'producto': 'yanobandera', 'grupo': '', 'utilidades': '0.0', 'preciocompra': '0.0', 'stock': '0.0', 'preciopublico': '0.0'}
+    #proveedor={'nombre':'hola','telefono':'3456789','direccion':'simona la mona'}
+    #eventos=con.FutureEvents()
+    #for evento in eventos:
+    #    print (evento)
+    res=con.DeletePastEvents()
+    #print (res)
+    #evento={'proveedor': 'jejes', 'dia': "2020-10-02", 'hora': "0", 'descripcion': 'otra2'}
+    #con.AddEvent(evento)
