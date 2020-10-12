@@ -133,7 +133,6 @@ class ViewProveedores(QDialog):
             view = EmergenteAgendar2(fecha, self)
             view.show()
             self.RefreshTableEvents()
-
     def edita(self):
         if self.valida_formulario():
             row = self.tablaproveedores.currentRow()

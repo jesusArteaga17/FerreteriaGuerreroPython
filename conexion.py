@@ -17,7 +17,7 @@ class Conexion():
             cursor.execute("select * from productos")
             resultado=[]
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','existencia'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock','bodega'], producto)))
             con.close()
             return (resultado)
         else:
@@ -93,7 +93,7 @@ class Conexion():
             cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo")
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock','bodega'], producto)))
             con.close()
             return (resultado)
         else:
@@ -118,7 +118,20 @@ class Conexion():
                 ['id', 'nombre', 'apellidos', 'numcontrol', 'telefono', 'correo'], producto)))
         con.close()
         return (resultado)
-
+    def AllBodega(self):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("SELECT * FROM `productos` WHERE bodega<stockminimo")
+            resultado = []
+            for producto in cursor.fetchall():
+                resultado.append(dict(zip(
+                    ['id', 'codigo', 'producto', 'grupo', 'utilidades', 'preciocompra', 'preciopublico', 'stockminimo',
+                     'stockmaximo', 'stock', 'bodega'], producto)))
+            con.close()
+            return (resultado)
+        else:
+            return False
     def AllProveedores(self):
         con = self.conect()
         if con != False:
@@ -260,6 +273,46 @@ class Conexion():
             return id
         else:
             return False
+
+    def UpdateInventario(self,codigo,producto):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "UPDATE `productos` SET `stockminimo` = %s, `stockmaximo` = %s, `stock` = %s, `bodega` = %s WHERE `productos`.`codigo` = " + str(
+                    codigo),
+                (producto['stockminimo'], producto['stockmaximo'], producto['stock'], producto['bodega']))
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
+    def SurtirStock(self,codigo,stock,bodega):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "UPDATE `productos` SET `stock` = %s, `bodega` = %s WHERE `productos`.`codigo` = " + str(
+                    codigo),
+                (stock,bodega))
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
+    def Surtir(self,codigo,preciocompra,bodega):
+        con = self.conect()
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "UPDATE `productos` SET `preciocompra` = %s, `bodega` = %s WHERE `productos`.`codigo` = " + str(
+                    codigo),
+                (preciocompra, bodega))
+            con.commit()
+            con.close()
+            return True
+        else:
+            return False
 if __name__=="__main__":
     con=Conexion()
     #producto={'codigo':'26749433','producto':"basinilla",'descuento':'7','stockminimo':'23','stockmaximo':'50','precio':'67.7','existencia':'24','grupo':'basinillas'       }
@@ -269,7 +322,7 @@ if __name__=="__main__":
     #eventos=con.FutureEvents()
     #for evento in eventos:
     #    print (evento)
-    res=con.DeletePastEvents()
     #print (res)
     #evento={'proveedor': 'jejes', 'dia': "2020-10-02", 'hora': "0", 'descripcion': 'otra2'}
     #con.AddEvent(evento)
+    print (con.AllBodega())
