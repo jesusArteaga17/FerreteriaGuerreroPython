@@ -24,7 +24,8 @@ class Valida():
         return res
 if __name__=="__main__":
     v = Valida()
-    if v.valida50Caracteres("1"):
+    if v.validaDecimal("."):
         print ("simon")
     else:
         print ("na")
+    print (float('.'))

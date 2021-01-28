@@ -12,13 +12,20 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>12</pointsize>
+    <family>Arial Unicode MS</family>
+    <pointsize>16</pointsize>
+    <weight>9</weight>
+    <italic>false</italic>
+    <bold>false</bold>
    </font>
   </property>
   <property name="windowTitle">
    <string>Agendar</string>
   </property>
-  <widget class="QWidget" name="">
+  <property name="styleSheet">
+   <string notr="true">*{font: 75 16pt &quot;Arial Unicode MS&quot;}</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -32,9 +39,11 @@
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <family>Arial Unicode MS</family>
+        <pointsize>16</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
       <property name="text">
@@ -46,7 +55,11 @@
      <widget class="QPlainTextEdit" name="descripcion_agendar">
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <family>Arial Unicode MS</family>
+        <pointsize>16</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
      </widget>
@@ -55,8 +68,11 @@
      <widget class="QLabel" name="label_2">
       <property name="font">
        <font>
-        <weight>75</weight>
-        <bold>true</bold>
+        <family>Arial Unicode MS</family>
+        <pointsize>16</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
       <property name="text">
@@ -82,8 +98,11 @@
      <widget class="QLabel" name="label_3">
       <property name="font">
        <font>
-        <weight>75</weight>
-        <bold>true</bold>
+        <family>Arial Unicode MS</family>
+        <pointsize>16</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
       <property name="text">

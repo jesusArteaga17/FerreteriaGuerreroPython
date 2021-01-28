@@ -1,29 +1,26 @@
-from PyQt5.QtWidgets import  QApplication, QDialog,QTableWidgetItem,QCalendarWidget
+from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow
 from PyQt5 import uic,QtWidgets
-from validaciones import Valida
-from conexion import *
 from pymsgbox import *
 from datetime import datetime
-import time
 import sys
 from Emergente_agendar import EmergenteAgendar
 from emergente_agendar2 import EmergenteAgendar2
-#QPlainTextEdit.appendPlainText()
-class ViewProveedores(QDialog):
+class ViewProveedores(QMainWindow):
     formValid=False
-    def __init__(self, *args, **kwargs):
+    def __init__(self,parametros={}, *args, **kwargs):
+        self.parametros=parametros
         self.date = datetime.now()
         super(ViewProveedores, self).__init__(*args, **kwargs)
         #todos los productos
         self.proveedores=[]
         #instanciamos el objeto de conexion a base de datos
-        self.con=Conexion()
+        self.con=parametros['conexion']
+        # instanciamiento de mi clase Valida (sirve para validar cadenas)
+        self.valida = parametros['valida']
         #Características de los imputs cuando son validados
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
         #bandera para saber cuando esta habilitada la opcion de editar un producto
-        #instanciamiento de mi clase Valida (sirve para validar cadenas)
-        self.valida=Valida()
         uic.loadUi("proveedores.ui",self)
         #Inicialización para los eventos de los botones
         self.botonagregar.clicked.connect(self.agrega)
@@ -38,8 +35,8 @@ class ViewProveedores(QDialog):
         self.ayudaeliminar.clicked.connect(self.ayudaEliminar)
         self.ayudaagendar.clicked.connect(self.ayudaAgendar)
         self.botonbuscar.clicked.connect(self.enterBuscar)
-        self.botoneliminar_2.clicked.connect(self.eliminarEvento)
-        self.botoneliminar_2.setDisabled(True)
+        self.botoneliminar_3.clicked.connect(self.eliminarEvento)
+        self.botoneliminar_3.setDisabled(True)
         self.ayudaeliminar_2.clicked.connect(self.ayudaEliminar2)
 
         #aqui me falta agregar los botones que son para el calendario
@@ -130,7 +127,8 @@ class ViewProveedores(QDialog):
                     ban = False
         if ban:
             fecha="%s-%s-%s"%(year,month,day)
-            view = EmergenteAgendar2(fecha, self)
+            self.parametros['dia']=fecha
+            view = EmergenteAgendar2(self.parametros, self)
             view.show()
             self.RefreshTableEvents()
     def edita(self):
@@ -196,7 +194,7 @@ class ViewProveedores(QDialog):
             id = self.tablaeventos.item(row, 0).text()
             if self.con.DeleteEvent(id) != False:
                 self.RefreshTableEvents()
-                self.botoneliminar_2.setDisabled(True)
+                self.botoneliminar_3.setDisabled(True)
                 alert(title="Listo!", text="Se eliminó correctamente", button="OK")
             else:
                 alert(title="Error en el servidor!", text="Asegurese que el servidor XAMPP este activo", button="OK")
@@ -205,8 +203,8 @@ class ViewProveedores(QDialog):
         self.botoneliminar.setDisabled(True)
         self.botonagendar.setDisabled(True)
         row=self.tablaproveedores.currentRow()
-        proveedor=self.tablaproveedores.item(row, 1).text() #se obtiene el nombre del proveedor seleccionado
-        view = EmergenteAgendar(proveedor,self)
+        self.parametros['proveedor']=self.tablaproveedores.item(row, 1).text() #se obtiene el nombre del proveedor seleccionado
+        view = EmergenteAgendar(self.parametros,self)
         view.show()
         self.RefreshTableEvents()
     def rowClicked(self):
@@ -225,7 +223,7 @@ class ViewProveedores(QDialog):
         except:
             pass
     def rowClicked2(self):
-        self.botoneliminar_2.setDisabled(False)
+        self.botoneliminar_3.setDisabled(False)
     def valNombre(self):
         input = self.nombre
         if len(input.text())<=100 and input.text()!="":
@@ -373,8 +371,14 @@ class ViewProveedores(QDialog):
                 self.tablaproveedores.setItem(i, 1, QTableWidgetItem(str(self.proveedores[coincidencias[i]]['nombre'])))
                 self.tablaproveedores.setItem(i, 2, QTableWidgetItem(str(self.proveedores[coincidencias[i]]['telefono'])))
                 self.tablaproveedores.setItem(i, 3, QTableWidgetItem(str(self.proveedores[coincidencias[i]]['direccion'])))
+            self.botoneliminar.setEnabled(False)
+            self.botoneditar.setEnabled(False)
+            self.botonagendar.setEnabled(False)
         else:
             self.RefreshTableData()
+            self.botoneliminar.setEnabled(False)
+            self.botoneditar.setEnabled(False)
+            self.botonagendar.setEnabled(False)
     def enterBuscar(self):
         self.busqueda.setSelection(0, 9999)
     def setFocusBuscar(self):
@@ -382,8 +386,12 @@ class ViewProveedores(QDialog):
         self.busqueda.setFocus()
 
 if __name__=="__main__":
+    from PyQt5.QtWidgets import QApplication
+    from validaciones import Valida
+    from conexion import Conexion
+    parametros={'conexion':Conexion(),'valida':Valida()}
     app = QApplication(sys.argv)
-    gui = ViewProveedores()
+    gui = ViewProveedores(parametros)
     gui.show()
     sys.exit(app.exec())
 

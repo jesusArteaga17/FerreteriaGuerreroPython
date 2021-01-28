@@ -1,24 +1,22 @@
-from PyQt5.QtWidgets import  QApplication, QDialog,QTableWidgetItem,QShortcut
+from PyQt5.QtWidgets import  QApplication,QTableWidgetItem,QShortcut,QMainWindow
 from PyQt5 import uic,QtWidgets,QtGui
-from validaciones import Valida
-from conexion import *
 from pymsgbox import *
 from datetime import datetime
 import sys
-class ViewProductos(QDialog):
+
+class ViewProductos(QMainWindow):
     formValid=False
-    def __init__(self, *args, **kwargs):
+    def __init__(self,parametros={}, *args, **kwargs):
         super(ViewProductos, self).__init__(*args, **kwargs)
-        #todos los productos
-        self.productos=[]
         #instanciamos el objeto de conexion a base de datos
-        self.con=Conexion()
+        self.con=parametros['conexion']
+        #instanciamiento de mi clase Valida
+        self.valida=parametros['valida']
         #Características de los imputs cuando son validados
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
-        #bandera para saber cuando esta habilitada la opcion de editar un producto
-        #instanciamiento de mi clase Valida
-        self.valida=Valida()
+        #Declaramos la variable de productos
+        self.productos=[]
         uic.loadUi("productos.ui",self)
         #Inicialización para los eventos de los botones
         self.botonagregar.clicked.connect(self.agrega)
@@ -28,6 +26,8 @@ class ViewProductos(QDialog):
         self.botonayudaedit.clicked.connect(self.ayudaeditar)
         self.botonayudadelete.clicked.connect(self.ayudaeliminar)
         self.botonbuscar.clicked.connect(self.enterBuscar)
+        self.anterior.clicked.connect(self.ShowAnterior)
+        self.siguiente.clicked.connect(self.ShowSiguiente)
         #Inicialización de los eventos para los inputs
         self.codigo.textChanged.connect(self.valCodigo)
         self.codigo.returnPressed.connect(self.agrega)
@@ -43,6 +43,8 @@ class ViewProductos(QDialog):
         self.stock.returnPressed.connect(self.agrega)
         self.busqueda.textChanged.connect(self.buscar)
         self.busqueda.setFocus()
+        self.pagina.returnPressed.connect(self.ShowPage)
+        self.pagina.textChanged.connect(self.valPagina)
         #Inicialización de los eventos de la tabla
         self.tablaproductos.clicked.connect(self.rowClicked)
         #configuracion de la cabecera de mi tabla
@@ -55,6 +57,13 @@ class ViewProductos(QDialog):
         header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de productos
         self.inputs = [self.codigo, self.producto, self.grupo, self.utilidades,self.preciocompra,self.stock]
+        #hacemos la paginacion de la tabla
+        numproducts = self.con.GetNumProducts()
+        pagina = int(numproducts / 50)
+        if numproducts%50>0:
+            pagina+=1
+        self.pagina.setText(str(pagina))
+        self.total_paginas.setText(str(pagina))
         self.RefreshTableData()
         #Definiendo los atajos
         shortcut1 = QShortcut(QtGui.QKeySequence("Ctrl+b"), self)
@@ -86,7 +95,7 @@ class ViewProductos(QDialog):
                     producto['stock'] = self.stock.text()
                 else:
                     producto['stock']="0"
-                producto['preciopublico'] =str(float(producto["preciocompra"])+float(producto["preciocompra"])*(float(producto["utilidades"])/100))
+                producto['preciopublico'] =str(float(producto["preciocompra"])+float(producto["utilidades"]))
                 if self.codigo.text() != "":
                     productoexist = self.con.GetProductByCode(self.codigo.text())
                     if productoexist != False:
@@ -94,8 +103,18 @@ class ViewProductos(QDialog):
                             if self.con.AddProduct(producto)!=False:
                                 for i in range(len(self.inputs)):
                                     self.inputs[i].setText("")
+                                #Actualizamos los datos de la paginacion a ultima pagina
+                                numproducts = self.con.GetNumProducts()
+                                pagina = int(numproducts / 50)
+                                if numproducts % 50 > 0:
+                                    pagina += 1
+                                self.pagina.setText(str(pagina))
+                                self.total_paginas.setText(str(pagina))
                                 self.RefreshTableData()
                                 self.RefreshTableStockmin()
+                                self.siguiente.setEnabled(False)
+                                self.botoneditar.setEnabled(False)
+                                self.botoneliminar.setEnabled(False)
                                 alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                             else:
                                 alert(title="Error de servidor",text="Ocurrió un error en el servidor",button="OK")
@@ -112,17 +131,19 @@ class ViewProductos(QDialog):
                         micro = str(now.microsecond)[3]
                         newcode = str(id) + second + micro
                         self.con.UpdateCodigoProduct(id, newcode)
-                        rowPosition = self.tablaproductos.rowCount()
-                        self.tablaproductos.insertRow(rowPosition)
-                        self.tablaproductos.setItem(rowPosition, 0, QTableWidgetItem(newcode))
-                        self.tablaproductos.setItem(rowPosition, 1, QTableWidgetItem(producto["producto"]))
-                        self.tablaproductos.setItem(rowPosition, 2, QTableWidgetItem(producto["grupo"]))
-                        self.tablaproductos.setItem(rowPosition, 3, QTableWidgetItem(producto["utilidades"]))
-                        self.tablaproductos.setItem(rowPosition, 4, QTableWidgetItem(producto["preciocompra"]))
-                        self.tablaproductos.setItem(rowPosition, 5, QTableWidgetItem(producto["preciopublico"]))
+                        numproducts = self.con.GetNumProducts()
+                        pagina = int(numproducts / 50)
+                        if numproducts % 50 > 0:
+                            pagina += 1
+                        self.pagina.setText(str(pagina))
+                        self.total_paginas.setText(str(pagina))
+                        self.RefreshTableData()
                         for i in range(len(self.inputs)):
                             self.inputs[i].setText("")
                         self.RefreshTableStockmin()
+                        self.siguiente.setEnabled(False)
+                        self.botoneditar.setEnabled(False)
+                        self.botoneliminar.setEnabled(False)
                         alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                     else:
                         alert(title="Error en servidor!", text="Revise que el servidor XAMPP este activo", button="OK")
@@ -134,6 +155,7 @@ class ViewProductos(QDialog):
                 row = self.tablaproductos.currentRow()
                 opc=confirm(text="Desea editar "+str(self.tablaproductos.item(row,1).text())+"?",title="Editar?",buttons=["OK","CANCEL"])
                 if opc=="OK":
+                    #recojemos los datos del formulario
                     codigo_ant=self.tablaproductos.item(row, 0).text()
                     producto = {}
                     producto['codigo'] = self.codigo.text()
@@ -142,14 +164,22 @@ class ViewProductos(QDialog):
                     producto['utilidades'] = self.utilidades.text()
                     producto['preciocompra'] = self.preciocompra.text()
                     producto['stock'] = self.stock.text()
-                    producto['preciopublico'] = str(float(producto["preciocompra"])+float(producto["preciocompra"])*(float(producto["utilidades"])/100))
+                    producto['preciopublico'] = str(float(producto["preciocompra"])+float(producto["utilidades"]))
                     if self.codigo.text()!=codigo_ant:
                         productexist = self.con.GetProductByCode(self.codigo.text())
                         if productexist != False:
                             if len(productexist) == 0:
                                 self.con.UpdateProduct(codigo_ant, producto)
-                                self.RefreshTableData()
+                                index=self.tablaproductos.currentRow()
+                                self.tablaproductos.setItem(index, 0, QTableWidgetItem(str(producto['codigo'])))
+                                self.tablaproductos.setItem(index, 1, QTableWidgetItem(str(producto['producto'])))
+                                self.tablaproductos.setItem(index, 2, QTableWidgetItem(str(producto['grupo'])))
+                                self.tablaproductos.setItem(index, 3, QTableWidgetItem(str(producto['utilidades'])))
+                                self.tablaproductos.setItem(index, 4, QTableWidgetItem(str(producto['preciocompra'])))
+                                self.tablaproductos.setItem(index, 5, QTableWidgetItem(str(producto['preciopublico'])))
                                 self.RefreshTableStockmin()
+                                self.botoneditar.setEnabled(False)
+                                self.botoneliminar.setEnabled(False)
                                 for i in range(len(self.inputs)):
                                     self.inputs[i].setText("")
                             else:
@@ -159,8 +189,16 @@ class ViewProductos(QDialog):
                                   button="OK")
                     else:
                         if self.con.UpdateProduct(codigo_ant,producto)!=False:
-                            self.RefreshTableData()
+                            index = self.tablaproductos.currentRow()
+                            self.tablaproductos.setItem(index, 0, QTableWidgetItem(str(producto['codigo'])))
+                            self.tablaproductos.setItem(index, 1, QTableWidgetItem(str(producto['producto'])))
+                            self.tablaproductos.setItem(index, 2, QTableWidgetItem(str(producto['grupo'])))
+                            self.tablaproductos.setItem(index, 3, QTableWidgetItem(str(producto['utilidades'])))
+                            self.tablaproductos.setItem(index, 4, QTableWidgetItem(str(producto['preciocompra'])))
+                            self.tablaproductos.setItem(index, 5, QTableWidgetItem(str(producto['preciopublico'])))
                             self.RefreshTableStockmin()
+                            self.botoneditar.setEnabled(False)
+                            self.botoneliminar.setEnabled(False)
                             for i in range(len(self.inputs)):
                                 self.inputs[i].setText("")
                         else:
@@ -180,9 +218,21 @@ class ViewProductos(QDialog):
                     for i in range(len(self.inputs)):
                         self.inputs[i].setText("")
                     try:
+                        numproducts = self.con.GetNumProducts()
+                        total_paginas = int(numproducts / 50)
+                        if numproducts % 50 > 0:
+                            total_paginas += 1
+                        self.total_paginas.setText(str(total_paginas))
+                        if int(self.pagina.text())>int(self.total_paginas.text()):
+                            self.pagina.setText(self.total_paginas.text())
+                            self.siguiente.setEnabled(False)
+                        elif int(self.pagina.text())==int(self.total_paginas.text()):
+                            self.siguiente.setEnabled(False)
                         self.RefreshTableData()
+                        self.botoneditar.setEnabled(False)
+                        self.botoneliminar.setEnabled(False)
                     except:
-                        print ("Hubo un error")
+                        pass
 
                 else:
                     alert(title="Error en el servidor!",text="Asegurese que el servidor XAMPP este activo",button="OK")
@@ -196,6 +246,8 @@ class ViewProductos(QDialog):
             for i in range(len(self.inputs)-1):
                 self.inputs[i].setText(self.tablaproductos.item(row,i).text())
             self.inputs[-1].setText(str(self.productos[row]["stock"]))
+            self.botoneditar.setEnabled(True)
+            self.botoneliminar.setEnabled(True)
         except:
             pass
     def valida_formulario(self,accion):
@@ -220,11 +272,16 @@ class ViewProductos(QDialog):
                 return False
     def valCodigo(self):
         input=self.codigo
-        res=self.valida.validaNumero(input.text())
-        if res:
-            input.setStyleSheet(self.trueValidate)
-        else:
+        res=False
+        try:
+            text=input.text()
+            int(text)
+            if len(text)<21:
+                input.setStyleSheet(self.trueValidate)
+                res=True
+        except:
             input.setStyleSheet(self.falseValidate)
+        #res=self.valida.validaNumero(input.text())
         return res
     def valProducto(self):
         input = self.producto
@@ -280,32 +337,84 @@ class ViewProductos(QDialog):
         else:
             input.setStyleSheet(self.falseValidate)
         return res
+    def valPagina(self):
+        input = self.pagina
+        valida=False
+        if len(input.text())>0:
+            valida = self.valida.validaNumero(input.text())
+        if valida:
+            if int(input.text()) > 0 and int(input.text()) <= int(self.total_paginas.text()):
+                input.setStyleSheet(self.trueValidate)
+                return True
+            else:
+                input.setStyleSheet(self.falseValidate)
+                return False
+        else:
+            input.setStyleSheet(self.falseValidate)
+            return False
     def RefreshTableData(self):
-        self.productos=self.con.AllProducts()
-        if self.productos!=False:
-            rowCount=self.tablaproductos.rowCount()
-            self.tablaproductos.clearContents()
-            productos=self.productos
+        page = int(self.pagina.text())
+        self.productos = self.con.GetPageProducts(page)
+        productos=self.productos
+        if productos!=False:
+            rowCount = self.tablaproductos.rowCount()
             for i in range(rowCount):
                 self.tablaproductos.removeRow(0)
             for i in range(len(productos)):
-                self.tablaproductos.insertRow(i)
-                self.tablaproductos.setItem(i,0, QTableWidgetItem( str(productos[i]['codigo'])))
-                self.tablaproductos.setItem(i, 1, QTableWidgetItem(str(productos[i]['producto'])))
-                self.tablaproductos.setItem(i, 2, QTableWidgetItem(str(productos[i]['grupo'])))
-                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(productos[i]['utilidades'])))
-                self.tablaproductos.setItem(i, 5, QTableWidgetItem(str(productos[i]['preciocompra'])))
-                self.tablaproductos.setItem(i, 6, QTableWidgetItem(str(productos[i]['preciopublico'])))
+                self.tablaproductos.insertRow(0)
+                self.tablaproductos.setItem(0,0, QTableWidgetItem( str(productos[i]['codigo'])))
+                self.tablaproductos.setItem(0, 1, QTableWidgetItem(str(productos[i]['producto'])))
+                self.tablaproductos.setItem(0, 2, QTableWidgetItem(str(productos[i]['grupo'])))
+                self.tablaproductos.setItem(0, 3, QTableWidgetItem(str(productos[i]['utilidades'])))
+                self.tablaproductos.setItem(0, 4, QTableWidgetItem(str(productos[i]['preciocompra'])))
+                self.tablaproductos.setItem(0, 5, QTableWidgetItem(str(productos[i]['preciopublico'])))
             self.RefreshTableStockmin()
         else:
             alert(title="Error de servidor!",text="Asegurese que el servidor XAMPP este activo",button="OK")
+    def ShowSiguiente(self):
+        self.anterior.setEnabled(True)
+        pagina=int(self.pagina.text())+1
+        self.pagina.setText(str(pagina))
+        if pagina==int(self.total_paginas.text()):
+            self.siguiente.setEnabled(False)
+        self.RefreshTableData()
+        self.botoneditar.setEnabled(False)
+        self.botoneliminar.setEnabled(False)
+    def ShowAnterior(self):
+        self.siguiente.setEnabled(True)
+        pagina = int(self.pagina.text()) - 1
+        self.pagina.setText(str(pagina))
+        if pagina ==1:
+            self.anterior.setEnabled(False)
+        self.RefreshTableData()
+        self.botoneditar.setEnabled(False)
+        self.botoneliminar.setEnabled(False)
+    def ShowPage(self):
+        input = self.pagina
+        valida=self.valPagina()
+        if valida:
+            if input.text()==self.total_paginas.text():
+                self.siguiente.setEnabled(False)
+                self.anterior.setEnabled(True)
+            elif input.text()=='1':
+                self.anterior.setEnabled(False)
+                self.siguiente.setEnabled(True)
+            else:
+                self.anterior.setEnabled(True)
+                self.siguiente.setEnabled(True)
+            self.RefreshTableData()
+            self.botoneditar.setEnabled(False)
+            self.botoneliminar.setEnabled(False)
+        else:
+            input.setText(str(self.total_paginas.text()))
+            self.anterior.setEnabled(True)
+            self.siguiente.setEnabled(False)
     def RefreshTableStockmin(self):
-        self.tablestockminimo.clearContents()
         productos = self.con.AllStockMinimo()
         rowCount=self.tablestockminimo.rowCount()
         for i in range(rowCount):
             self.tablestockminimo.removeRow(0)
-        for i in range(len(productos)):
+        for i in range(len(productos)-1,-1,-1):
             self.tablestockminimo.insertRow(i)
             self.tablestockminimo.setItem(i, 0, QTableWidgetItem(str(productos[i]['producto'])))
             self.tablestockminimo.setItem(i, 1, QTableWidgetItem(str(productos[i]['stockminimo'])))
@@ -325,41 +434,39 @@ class ViewProductos(QDialog):
                                  "1.- Seleccione el producto a eliminar de la tabla \n"
                                  "2.- Hacer click en el boton 'Eliminar' o precionar 'Ctrl + d'")
     def buscar(self):
-        if self.busqueda.text()!="":
-            coincidencias=[]
-            for j in range(1,4):
-                keys=[]
-                busqueda=self.busqueda.text().lower()
-                for i in range(len(self.productos)):
-                    producto=list(self.productos[i].values())
-                    keys.append(str(producto[j]).lower())
-                for i in range(len(keys)):
-                    if keys[i].find(busqueda)!=-1:
-                        if i not in coincidencias:
-                            coincidencias.append(i)
-                for i in range(self.tablaproductos.rowCount()):
-                    self.tablaproductos.removeRow(0)
+        if self.busqueda.text()!="" and len(self.busqueda.text())>3:
+            busqueda=self.busqueda.text()
+            self.productos=self.con.FindProducts(busqueda)
+            coincidencias=self.productos
+            rowCount = self.tablaproductos.rowCount()
+            for i in range(rowCount):
+                self.tablaproductos.removeRow(0)
             for i in range(len(coincidencias)):
-                self.tablaproductos.insertRow(i)
-                self.tablaproductos.setItem(i, 0, QTableWidgetItem(str(self.productos[coincidencias[i]]['codigo'])))
-                self.tablaproductos.setItem(i, 1, QTableWidgetItem(str(self.productos[coincidencias[i]]['producto'])))
-                self.tablaproductos.setItem(i, 2, QTableWidgetItem(str(self.productos[coincidencias[i]]['grupo'])))
-                self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(self.productos[coincidencias[i]]['utilidades'])))
-                self.tablaproductos.setItem(i, 5, QTableWidgetItem(str(self.productos[coincidencias[i]]['preciocompra'])))
-                self.tablaproductos.setItem(i, 6, QTableWidgetItem(str(self.productos[coincidencias[i]]['preciopublico'])))
+                self.tablaproductos.insertRow(0)
+                self.tablaproductos.setItem(0, 0, QTableWidgetItem(str(coincidencias[i]['codigo'])))
+                self.tablaproductos.setItem(0, 1, QTableWidgetItem(str(coincidencias[i]['producto'])))
+                self.tablaproductos.setItem(0, 2, QTableWidgetItem(str(coincidencias[i]['grupo'])))
+                self.tablaproductos.setItem(0, 3, QTableWidgetItem(str(coincidencias[i]['utilidades'])))
+                self.tablaproductos.setItem(0, 4, QTableWidgetItem(str(coincidencias[i]['preciocompra'])))
+                self.tablaproductos.setItem(0, 5, QTableWidgetItem(str(coincidencias[i]['preciopublico'])))
+            self.botoneditar.setEnabled(False)
+            self.botoneliminar.setEnabled(False)
+        elif len(self.busqueda.text())<4 and self.busqueda.text()!='':
+            pass
         else:
+            self.botoneditar.setEnabled(False)
+            self.botoneliminar.setEnabled(False)
             self.RefreshTableData()
     def enterBuscar(self):
         self.busqueda.setSelection(0, 9999)
     def setFocusBuscar(self):
         self.busqueda.setText("")
         self.busqueda.setFocus()
-"""if __name__=="__main__":
+if __name__=="__main__":
+    from validaciones import Valida
+    from conexion import Conexion
+    parametros={'conexion':Conexion(),'valida':Valida()}
     app = QApplication(sys.argv)
-    gui = ViewProductos()
+    gui = ViewProductos(parametros)
     gui.show()
-    sys.exit(app.exec())"""
-app = QApplication(sys.argv)
-gui = ViewProductos()
-gui.show()
-sys.exit(app.exec())
+    sys.exit(app.exec())

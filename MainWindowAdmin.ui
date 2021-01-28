@@ -13,11 +13,24 @@
     <height>608</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Arial Unicode MS</family>
+    <pointsize>16</pointsize>
+    <weight>9</weight>
+    <italic>false</italic>
+    <bold>false</bold>
+   </font>
+  </property>
   <property name="cursor">
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Administrador</string>
+   <string>Ferretería Guerrero</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/Foto de Jebus.jpg</normaloff>icons/Foto de Jebus.jpg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindowt{
@@ -31,7 +44,8 @@ QLineEdit{
 }
 QPushButton{
 	background-color:rgb(144, 156, 186),
-}</string>
+}
+*{font: 75 16pt &quot;Arial Unicode MS&quot;}</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -45,23 +59,49 @@ QPushButton{
 	height:40px
 }</string>
    </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>50</y>
+      <width>811</width>
+      <height>551</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">*{font: 75 16pt &quot;Arial Unicode MS&quot;}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>icons/Foto de Jebus.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>811</width>
-      <height>51</height>
+      <width>801</width>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMaximumSize</enum>
+     <property name="spacing">
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="botonProductos">
        <property name="text">
         <string>Productos</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/tools_icon-icons.com_66303.png</normaloff>icons/tools_icon-icons.com_66303.png</iconset>
        </property>
       </widget>
      </item>
@@ -70,12 +110,9 @@ QPushButton{
        <property name="text">
         <string>Inventario</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botonUsuarios">
-       <property name="text">
-        <string>Usuarios</string>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/ic-inventory_97650.png</normaloff>icons/ic-inventory_97650.png</iconset>
        </property>
       </widget>
      </item>
@@ -84,6 +121,43 @@ QPushButton{
        <property name="text">
         <string>Proveedores</string>
        </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/user_circle_icon_148611.png</normaloff>icons/user_circle_icon_148611.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonClientes">
+       <property name="text">
+        <string>Clientes</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/user_circle_icon_148611.png</normaloff>icons/user_circle_icon_148611.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonUsuarios">
+       <property name="text">
+        <string>Usuarios</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/user_circle_icon_148611.png</normaloff>icons/user_circle_icon_148611.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonVentas">
+       <property name="text">
+        <string>Ventas</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/3741759-artboard-bussiness-ecommerce-marketplace-onlinestore-store-trolly_108893.png</normaloff>icons/3741759-artboard-bussiness-ecommerce-marketplace-onlinestore-store-trolly_108893.png</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -91,125 +165,13 @@ QPushButton{
        <property name="text">
         <string>Salir</string>
        </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icons/logout.png</normaloff>icons/logout.png</iconset>
+       </property>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QLCDNumber" name="RHora">
-    <property name="geometry">
-     <rect>
-      <x>-20</x>
-      <y>500</y>
-      <width>111</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="lineWidth">
-     <number>0</number>
-    </property>
-    <property name="digitCount">
-     <number>3</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-    <property name="value" stdset="0">
-     <double>55.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="RMin">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>500</y>
-      <width>111</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="lineWidth">
-     <number>0</number>
-    </property>
-    <property name="midLineWidth">
-     <number>0</number>
-    </property>
-    <property name="smallDecimalPoint">
-     <bool>false</bool>
-    </property>
-    <property name="digitCount">
-     <number>3</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-    <property name="value" stdset="0">
-     <double>21.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Rdivisor">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>490</y>
-      <width>31</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>66</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>:</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>250</y>
-      <width>741</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>1000</number>
-    </property>
-    <property name="value">
-     <number>60</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <property name="tickPosition">
-     <enum>QSlider::TicksBothSides</enum>
-    </property>
-    <property name="tickInterval">
-     <number>2</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>320</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -218,7 +180,7 @@ QPushButton{
      <x>0</x>
      <y>0</y>
      <width>804</width>
-     <height>21</height>
+     <height>34</height>
     </rect>
    </property>
   </widget>
@@ -240,22 +202,5 @@ QPushButton{
   </action>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>sliderMoved(int)</signal>
-   <receiver>label_2</receiver>
-   <slot>setNum(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>261</x>
-     <y>279</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>358</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
