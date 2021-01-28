@@ -59,9 +59,11 @@ class ViewProductos(QMainWindow):
         self.inputs = [self.codigo, self.producto, self.grupo, self.utilidades,self.preciocompra,self.stock]
         #hacemos la paginacion de la tabla
         numproducts = self.con.GetNumProducts()
-        pagina = int(numproducts / 50)
-        if numproducts%50>0:
-            pagina+=1
+        pagina = 1
+        if numproducts != 0:
+            pagina = int(numproducts / 50)
+            if numproducts % 50 > 0:
+                pagina += 1
         self.pagina.setText(str(pagina))
         self.total_paginas.setText(str(pagina))
         self.RefreshTableData()
