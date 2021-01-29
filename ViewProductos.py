@@ -64,6 +64,8 @@ class ViewProductos(QMainWindow):
             pagina = int(numproducts / 50)
             if numproducts % 50 > 0:
                 pagina += 1
+        if pagina<=1:
+            self.anterior.setEnabled(False)
         self.pagina.setText(str(pagina))
         self.total_paginas.setText(str(pagina))
         self.RefreshTableData()
@@ -117,7 +119,7 @@ class ViewProductos(QMainWindow):
                                 self.siguiente.setEnabled(False)
                                 self.botoneditar.setEnabled(False)
                                 self.botoneliminar.setEnabled(False)
-                                alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
+                                #alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                             else:
                                 alert(title="Error de servidor",text="Ocurrió un error en el servidor",button="OK")
                         else:
@@ -146,7 +148,7 @@ class ViewProductos(QMainWindow):
                         self.siguiente.setEnabled(False)
                         self.botoneditar.setEnabled(False)
                         self.botoneliminar.setEnabled(False)
-                        alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
+                        #alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                     else:
                         alert(title="Error en servidor!", text="Revise que el servidor XAMPP este activo", button="OK")
         else:
@@ -216,7 +218,7 @@ class ViewProductos(QMainWindow):
             if opc=="OK":
                 codigo=self.tablaproductos.item(row, 0).text()
                 if self.con.DeleteProduct(codigo)!=False:
-                    alert(title="Listo!",text="Se eliminó correctamente",button="OK")
+                    #alert(title="Listo!",text="Se eliminó correctamente",button="OK")
                     for i in range(len(self.inputs)):
                         self.inputs[i].setText("")
                     try:

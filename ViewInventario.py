@@ -67,6 +67,8 @@ class ViewInventario(QMainWindow):
             pagina = int(numproducts / 50)
             if numproducts % 50 > 0:
                 pagina += 1
+        if pagina<=1:
+            self.anterior.setEnabled(False)
         self.pagina.setText(str(pagina))
         self.total_paginas.setText(str(pagina))
         self.RefreshTableData()

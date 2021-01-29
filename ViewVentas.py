@@ -193,7 +193,7 @@ class ViewVentas(QMainWindow):
                         producto['precio'] = self.tableventas.item(i, 5).text()
                         #se reduce la existencia del producto
                         producto['stock'] = str(float(self.tableventas.item(i, 3).text()) - float(self.tableventas.item(i, 4).text()))
-                        self.productos[producto['codigo']]['stock'] = str(float(self.tableventas.item(i, 3).text()) - float(self.tableventas.item(i, 4).text()))#aqui es donde se reduce la existencia
+                        #producto['codigo']['stock'] = str(float(self.tableventas.item(i, 3).text()) - float(self.tableventas.item(i, 4).text()))#aqui es donde se reduce la existencia
                         self.carrito.append(producto)
                     venta={}
                     if creditCheked:
@@ -256,7 +256,7 @@ class ViewVentas(QMainWindow):
                 alert(title='Error!',text="Entrada no válida")
 
     def hacerTicket(self,num_venta,venta,carrito):
-        ticket='Ferretería Guerrero\nNicolás Bravo #4 esq. Américas\nTepechitlán Zacatecas\n99750\n\n__________________________\n'
+        ticket='Ferretería Guerrero\nNicolás Bravo #4 esq. Américas\nTepechitlán Zacatecas\n99750\n\n______________________________\n'
 
         ticket+='No. TICKET:'+str(num_venta)+'\n'
         date= datetime.now()
@@ -266,11 +266,15 @@ class ViewVentas(QMainWindow):
             hora='0'+str(hora)
         if minute<9:
             minute='0'+str(minute)
-        ticket+='FECHA: '+str(date.date())+'\nHORA: '+str(hora)+':'+str(minute)+'\n__________________________\nCantidad Precio Importe\n_________________________\n'
+        ticket+='FECHA: '+str(date.date())+'\nHORA: '+str(hora)+':'+str(minute)+'\n______________________________\nCantidad       Precio           Importe\n______________________________\n'
+        col_vacia="                       "
         for producto in carrito:
-            ticket+=producto['producto']+'\n'
-            ticket+=producto['cantidad']+' '+producto['precio']+' '+str(float(producto['cantidad'])*float(producto['precio']))+'\n'
-        ticket+='________________________\n\n'
+            ticket+=producto['producto'][:34]+'\n'
+            cantidad=str(round(float(producto['cantidad']),2))
+            precio=str(round(float(producto['precio']),2))
+            importe=str(round(float(producto['cantidad'])*float(producto['precio']),2))
+            ticket+=cantidad+col_vacia[len(cantidad)*2:]+precio+col_vacia[len(precio)*2:]+importe+'\n'
+        ticket+='______________________________\n\n'
         ticket+='Total: '+str(venta['montototal'])+'\nPago: '+str(venta['pago'])+'\nCambio: '+str(venta['cambio'])+'\nOperador: '+venta['usuario']+'\n'+'Cliente: '+venta['cliente']
         #print (ticket)
         return str(ticket)
@@ -538,7 +542,7 @@ class ViewVentas(QMainWindow):
                     except:
                         self.cantidad.setEnabled(False)
                         self.botquitar.setEnabled(False)
-                        alert(title='Error!', text='Producto no encontrado1')
+                        alert(title='Error!', text='Producto no encontrado')
                 self.calculaMontototal()
 
         except:
@@ -586,7 +590,7 @@ class ViewVentas(QMainWindow):
                 self.tableventas.setFocus()
                 self.estabuscando = True
             else:
-                alert(title="Error",text='Producto no encontrado2')
+                alert(title="Error",text='Producto no encontrado')
                 self.cantidad.setEnabled(False)
                 self.botquitar.setEnabled(False)
         self.tableventas.scrollToItem(self.tableventas.item(self.tableventas.rowCount(),0))

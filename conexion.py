@@ -743,6 +743,7 @@ class Conexion():
             id = cursor.lastrowid
             for producto in productos:
                 #registramos los productos vendidos
+                print (producto)
                 cursor.execute(
                     "INSERT  INTO productos_ventas (id_venta,producto,cantidad,precio)VALUES (%s,%s,%s,%s)",
                     (id, producto['producto'], producto['cantidad'], producto['precio']))
@@ -770,11 +771,55 @@ class Conexion():
             return True
         else:
             return False
+    def CleanAll(self):
+        con = self.conexion
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute("DELETE FROM `clientes`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `creditos`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `eventos`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `productos`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `productos_credito`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `productos_ventas`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `proveedores`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `ventas`")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `usuarios` where nombre_usuario!='Admministrador'")
+            # Guardar cambios.
+            con.commit()
+            cursor.execute("DELETE FROM `clientes`")
+            con.commit()
+            cursor.execute("ALTER TABLE ventas AUTO_INCREMENT=0")
+            con.commit()
+            cursor.execute("ALTER TABLE clientes AUTO_INCREMENT=0")
+            con.commit()
+            cursor.execute("ALTER TABLE creditos AUTO_INCREMENT=0")
+            con.commit()
+            cursor.execute("ALTER TABLE proveedores AUTO_INCREMENT=0")
+            con.commit()
+
+            return True
+        else:
+            return False
 
 if __name__=="__main__":
     from datetime import datetime
     con=Conexion()
-    #print (con.GetProductByCode(6675))
-    users=con.AllClients()
-    for user in users:
-        print (user)
+    print(con.CleanAll())
+
+

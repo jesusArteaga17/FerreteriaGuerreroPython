@@ -35,7 +35,7 @@ class ViewHistorial(QDialog):
         self.fecha.dateChanged.connect(self.RefreshTableData)
         self.RefreshTableData()
     def hacerTicket(self,num_venta,venta,carrito):
-        ticket='Ferretería Guerrero\nNicolás Bravo #4 esq. Américas\nTepechitlán Zacatecas\n99750\n\n__________________________\n'
+        ticket='Ferretería Guerrero\nNicolás Bravo #4 esq. Américas\nTepechitlán Zacatecas\n99750\n\n______________________________\n'
         ticket+='No. TICKET:'+str(num_venta)+'\n'
         date = datetime.now()
         hora=date.hour
@@ -44,11 +44,15 @@ class ViewHistorial(QDialog):
             hora='0'+str(hora)
         if minute<9:
             minute='0'+str(minute)
-        ticket+='FECHA: '+str(venta['fecha'])+'\nHORA: '+str(hora)+':'+str(minute)+'\n__________________________\nCantidad Precio Importe\n_________________________\n'
+        ticket+='FECHA: '+str(venta['fecha'])+'\nHORA: '+str(hora)+':'+str(minute)+'\n______________________________\nCantidad       Precio           Importe\n______________________________\n'
+        col_vacia = "                       "
         for producto in carrito:
-            ticket+=producto['producto']+'\n'
-            ticket+=str(producto['cantidad'])+' '+str(producto['precio'])+' '+str(float(producto['cantidad'])*float(producto['precio']))+'\n'
-        ticket+='________________________\n\n'
+            ticket+=producto['producto'][:34]+'\n'
+            cantidad = str(round(float(producto['cantidad']), 2))
+            precio = str(round(float(producto['precio']), 2))
+            importe = str(round(float(producto['cantidad']) * float(producto['precio']), 2))
+            ticket+=cantidad+col_vacia[len(cantidad)*2:]+precio+col_vacia[len(precio)*2:]+importe+'\n'
+        ticket+='______________________________\n\n'
         ticket+='Total: '+str(venta['importe'])+'\nPago: '+str(venta['pago'])+'\nCambio: '+str(venta['cambio'])+'\nOperador: '+venta['usuario']+'\n'+'Cliente: '+venta['cliente']
         return str(ticket)
     def imprime(self):
