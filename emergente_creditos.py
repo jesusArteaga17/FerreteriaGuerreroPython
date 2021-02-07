@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import  QApplication, QDialog
-from PyQt5 import uic
+from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from conexion import Conexion
 from pymsgbox import *
@@ -8,7 +8,7 @@ from datetime import datetime
 class EmergenteCreditos(QDialog):
     def __init__(self, id_cliente=None,*args, **kwargs):
         super(EmergenteCreditos, self).__init__(*args, **kwargs)
-        uic.loadUi("Emergente_creditos.ui", self)
+        loadUi("Emergente_creditos.ui", self)
         #inicializamos el objeto conexion y el de datetime
         self.con=Conexion()
         self.date=datetime.now()

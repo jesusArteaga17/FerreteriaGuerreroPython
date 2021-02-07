@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QDialog,QTableWidgetItem,QHeaderView
-from PyQt5 import uic
+from PyQt5.uic import loadUi
 from pymsgbox import *
 class EmergenteProductosCredito(QDialog):
     def __init__(self, datos={},*args, **kwargs):
         super(EmergenteProductosCredito, self).__init__(*args, **kwargs)
-        uic.loadUi("ViewProductosCredito.ui", self)
+        loadUi("ViewProductosCredito.ui", self)
         self.nombrecliente.setText(datos['nombrecliente'])
         self.fechainicio.setText(datos['fechainicio'])
         self.fechavencimiento.setText(datos['fechavencimiento'])

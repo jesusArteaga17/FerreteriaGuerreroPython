@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import  QShortcut ,QTableWidgetItem,QDialog
-from PyQt5 import uic,QtWidgets,QtGui
+from PyQt5.QtWidgets import  QShortcut ,QTableWidgetItem,QDialog,QHeaderView
+from PyQt5.uic import loadUi
+from PyQt5.QtGui import QKeySequence
 from pymsgbox import *
 import sys
 class ViewUsuarios(QDialog):
@@ -16,7 +17,7 @@ class ViewUsuarios(QDialog):
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
 
-        uic.loadUi("Usuarios.ui",self)
+        loadUi("Usuarios.ui",self)
         #Inicialización para los eventos de los botones
         self.boteditar.setDisabled(True)
         self.boteliminar.setDisabled(True)
@@ -48,23 +49,23 @@ class ViewUsuarios(QDialog):
         self.tableUsuarios.clicked.connect(self.rowClicked)
         #configuracion de la cabecera de mi tabla
         header = self.tableUsuarios.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6,QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(7,QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(8,QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
         #Definiendo los atajos
-        shortcut1 = QShortcut(QtGui.QKeySequence("Ctrl+b"), self)
+        shortcut1 = QShortcut(QKeySequence("Ctrl+b"), self)
         shortcut1.activated.connect(self.setFocusBuscar)
-        shortcut3 = QShortcut(QtGui.QKeySequence("Ctrl+e"), self)
+        shortcut3 = QShortcut(QKeySequence("Ctrl+e"), self)
         shortcut3.activated.connect(self.edita)
-        shortcut4 = QShortcut(QtGui.QKeySequence("Ctrl+d"), self)
+        shortcut4 = QShortcut(QKeySequence("Ctrl+d"), self)
         shortcut4.activated.connect(self.elimina)
-        shortcut5 = QShortcut(QtGui.QKeySequence("Ctrl+Enter"), self)
+        shortcut5 = QShortcut(QKeySequence("Ctrl+Enter"), self)
         shortcut5.activated.connect(self.agrega)
         #shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
         #shortcut5.activated.connect(self.close)
@@ -85,7 +86,7 @@ class ViewUsuarios(QDialog):
                     usuario['creditos']=self.creditos.isChecked()
                     usuario['ventas']=self.ventas.isChecked()
                     if self.con.AddUser(usuario):
-                        alert(title="Correcto!",text="Operación correcta!")
+                        #alert(title="Correcto!",text="Operación correcta!")
                         for i in range(len(self.inputs)):
                             try:
                                 self.inputs[i].setChecked(False)
@@ -126,7 +127,7 @@ class ViewUsuarios(QDialog):
                     usuario['creditos'] = self.creditos.isChecked()
                     usuario['ventas'] = self.ventas.isChecked()
                     if self.con.UpdateUser(id,usuario):
-                        alert(title="Correcto!", text="Operación correcta!")
+                        #alert(title="Correcto!", text="Operación correcta!")
                         for i in range(len(self.inputs)):
                             try:
                                 self.inputs[i].setChecked(False)
@@ -148,7 +149,7 @@ class ViewUsuarios(QDialog):
             if opc=="OK":
                 id=self.tableUsuarios.item(row, 0).text()
                 if self.con.DeleteUser(id)!=False:
-                    alert(title="Listo!",text="Se eliminó correctamente",button="OK")
+                    #alert(title="Listo!",text="Se eliminó correctamente",button="OK")
                     for i in range(len(self.inputs)):
                         try:
                             self.inputs[i].setChecked(False)

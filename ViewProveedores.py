@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow
-from PyQt5 import uic,QtWidgets
+from PyQt5.QtWidgets import   QTableWidgetItem,QMainWindow,QHeaderView
+#from PyQt5.QtGui import QKeySequence
+from PyQt5.uic import loadUi
 from pymsgbox import *
 from datetime import datetime
 import sys
@@ -21,7 +22,7 @@ class ViewProveedores(QMainWindow):
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
         #bandera para saber cuando esta habilitada la opcion de editar un producto
-        uic.loadUi("proveedores.ui",self)
+        loadUi("proveedores.ui",self)
         #Inicialización para los eventos de los botones
         self.botonagregar.clicked.connect(self.agrega)
         self.botoneditar.clicked.connect(self.edita)
@@ -59,17 +60,17 @@ class ViewProveedores(QMainWindow):
         self.tablaeventos.clicked.connect(self.rowClicked2)
         #configuracion de la cabecera de mi tabla
         tablaProveedores = self.tablaproveedores.horizontalHeader()
-        tablaProveedores.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProveedores.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProveedores.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProveedores.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        tablaProveedores.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        tablaProveedores.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        tablaProveedores.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        tablaProveedores.setSectionResizeMode(3, QHeaderView.Stretch)
 
         tablaEventos = self.tablaeventos.horizontalHeader()
-        tablaEventos.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        tablaEventos.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        tablaEventos.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        tablaEventos.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        tablaEventos.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
+        tablaEventos.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        tablaEventos.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        tablaEventos.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        tablaEventos.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        tablaEventos.setSectionResizeMode(4, QHeaderView.Stretch)
         #Enlazamos el evento clicked del calendario con su funcion
         self.calendario.clicked.connect(self.agregaEvento)
         #lista de los inputs disponibles en la vista de productos
@@ -106,7 +107,7 @@ class ViewProveedores(QMainWindow):
                     self.botoneditar.setDisabled(True)
                     self.botoneliminar.setDisabled(True)
                     self.botonagendar.setDisabled(True)
-                    alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
+                    #alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                 else:
                     alert(title="Error de servidor", text="Ocurrió un error en el servidor", button="OK")
         else:
@@ -178,7 +179,7 @@ class ViewProveedores(QMainWindow):
                     self.botoneditar.setDisabled(True)
                     self.botoneliminar.setDisabled(True)
                     self.botonagendar.setDisabled(True)
-                    alert(title="Listo!", text="Se eliminó correctamente", button="OK")
+                    #alert(title="Listo!", text="Se eliminó correctamente", button="OK")
                 elif res==False:
                     alert(title="Error en el servidor!", text="Asegurese que el servidor XAMPP este activo",
                           button="OK")
@@ -195,7 +196,7 @@ class ViewProveedores(QMainWindow):
             if self.con.DeleteEvent(id) != False:
                 self.RefreshTableEvents()
                 self.botoneliminar_3.setDisabled(True)
-                alert(title="Listo!", text="Se eliminó correctamente", button="OK")
+                #alert(title="Listo!", text="Se eliminó correctamente", button="OK")
             else:
                 alert(title="Error en el servidor!", text="Asegurese que el servidor XAMPP este activo", button="OK")
     def agendar(self):

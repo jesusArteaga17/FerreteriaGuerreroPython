@@ -108,7 +108,7 @@ class ViewHistorial(QDialog):
                 self.tableventas.setItem(i, 0, QTableWidgetItem(str(productos[i]['producto'])))
                 self.tableventas.setItem(i, 1, QTableWidgetItem(str(productos[i]['cantidad'])))
                 self.tableventas.setItem(i, 2, QTableWidgetItem(str(productos[i]['precio'])))
-                self.tableventas.setItem(i, 3, QTableWidgetItem(str(float(productos[i]['cantidad'])*float(productos[i]['precio']))))
+                self.tableventas.setItem(i, 3, QTableWidgetItem(str(round(float(productos[i]['cantidad'])*float(productos[i]['precio']),2))))
             header = self.tableventas.horizontalHeader()
             header.setSectionResizeMode(0, QHeaderView.Stretch)
             header.setSectionResizeMode(1, QHeaderView.ResizeToContents)

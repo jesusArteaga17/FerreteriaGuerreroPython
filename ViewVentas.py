@@ -1,6 +1,6 @@
-import os
+from os import startfile
 from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow,QHeaderView
-from PyQt5 import uic,QtWidgets
+from PyQt5.uic import loadUi
 from pymsgbox import *
 from datetime import datetime
 from Abonar import ViewAbonar
@@ -11,7 +11,7 @@ class ViewVentas(QMainWindow):
     def __init__(self,parametros={}, *args, **kwargs):
         self.parametros=parametros
         super(ViewVentas, self).__init__(*args, **kwargs)
-        uic.loadUi("Ventas.ui",self)
+        loadUi("Ventas.ui",self)
         #instanciamos el objeto de conexion a base de datos
         self.con=parametros['conexion']
         #instanciamiento de mi clase Valida
@@ -31,6 +31,7 @@ class ViewVentas(QMainWindow):
         self.radioventaabierta.clicked.connect(self.clickedradioventaabierta)
         #evento de seleccion de carro
         self.carritos.currentIndexChanged.connect(self.elegirCarro)
+        self.carritos.setEnabled(False)
         #Eventos de los botones
         self.botguardar.clicked.connect(self.guardar)
         self.botquitar.clicked.connect(self.quitarproducto)
@@ -50,13 +51,13 @@ class ViewVentas(QMainWindow):
         self.usuario=parametros['usuario']
         self.labelusuario.setText(parametros['usuario'][0:20])
         header = self.tableventas.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         #Obteniendo todos los productos de la base de datos
         """productos=self.con.AllProducts()
         self.productos={}
@@ -99,7 +100,7 @@ class ViewVentas(QMainWindow):
         f = open('Ticket.txt', 'w+')
         f.write(texto)
         f.close()
-        os.startfile('Ticket.txt', 'print')
+        startfile('Ticket.txt', 'print')
     def clickedradioventaabierta(self):
         self.cliente.clear()
         self.clientes = self.con.AllClients()
@@ -132,7 +133,6 @@ class ViewVentas(QMainWindow):
                 producto['preciopublico'] = self.tableventas.item(i, 5).text()
                 producto['importe'] = self.tableventas.item(i, 6).text()
                 self.carrito.append(producto)
-        if len(self.carrito)>0:
             nombrecarro="Carrito "+str(self.date.minute)+":"+str(self.date.second)
             self.colacarritos[nombrecarro]=self.carrito
             self.carritos.insertItem(0,nombrecarro)
@@ -249,7 +249,7 @@ class ViewVentas(QMainWindow):
                         f = open('Ticket.txt', 'w+')
                         f.write(texto)
                         f.close()
-                        os.startfile('Ticket.txt', 'print')
+                        startfile('Ticket.txt', 'print')
                     self.carrito = []
                     self.setFocusBuscar()
             else:
@@ -305,8 +305,6 @@ class ViewVentas(QMainWindow):
             #quiere decir que clickamos cuando el cuadro esta en modo seleccion de producto
             self.estabuscando = not self.estabuscando
             self.tableventas.setStyleSheet('')
-            self.carritos.setEnabled(True)
-
             row=self.tableventas.currentRow()
             # ahumentamos el importe
             #obtenemos el producto seleccionado
@@ -492,6 +490,9 @@ class ViewVentas(QMainWindow):
     def setFocusBuscar(self):
         self.busqueda.setText("")
         self.busqueda.setFocus()
+    def setFocusPago(self):
+        self.pago.setSelection(0, 9999)
+        self.pago.setFocus()
     def buscar(self):
         index=self.tableventas.rowCount()
         #print ('index='+str(index))

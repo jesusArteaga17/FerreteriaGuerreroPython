@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import   QDialog,QTableWidgetItem,QShortcut,QMainWindow
-from PyQt5 import uic,QtWidgets,QtGui
-
+from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView
+from PyQt5.QtGui import QKeySequence
+from PyQt5.uic import loadUi
 from pymsgbox import *
 import sys
 from emergente_creditos import EmergenteCreditos
@@ -22,7 +22,7 @@ class ViewClientes(QMainWindow):
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
         #bandera para saber cuando esta habilitada la opcion de editar un cliente
-        uic.loadUi("Clientes.ui",self)
+        loadUi("Clientes.ui",self)
         #Inicialización para los eventos de los botones
         self.botagregar.clicked.connect(self.agrega)
         self.boteditar.clicked.connect(self.edita)
@@ -69,30 +69,30 @@ class ViewClientes(QMainWindow):
         self.tableCredit.clicked.connect(self.rowClicked2)
         #configuracion de la cabecera de mi tabla
         header = self.tableClient.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6,QtWidgets.QHeaderView.Stretch )
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6,QHeaderView.Stretch )
 
         header = self.tableCredit.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de Clientes
         self.inputs = [self.nombre, self.apellidos, self.rfc, self.telefono,self.correo,self.direccion]
         self.RefreshTableData()
         #Definiendo los atajos
-        shortcut1 = QShortcut(QtGui.QKeySequence("Ctrl+b"), self)
+        shortcut1 = QShortcut(QKeySequence("Ctrl+b"), self)
         shortcut1.activated.connect(self.setFocusBuscar)
-        shortcut3 = QShortcut(QtGui.QKeySequence("Ctrl+e"), self)
+        shortcut3 = QShortcut(QKeySequence("Ctrl+e"), self)
         shortcut3.activated.connect(self.edita)
-        shortcut4 = QShortcut(QtGui.QKeySequence("Ctrl+d"), self)
+        shortcut4 = QShortcut(QKeySequence("Ctrl+d"), self)
         shortcut4.activated.connect(self.elimina)
         #shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
         #shortcut5.activated.connect(self.close)
@@ -112,7 +112,7 @@ class ViewClientes(QMainWindow):
                     for i in range(len(self.inputs)):
                         self.inputs[i].setText("")
                     self.RefreshTableData()
-                    alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
+                    #alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
                     self.boteditar.setDisabled(True)
                     self.boteliminar.setDisabled(True)
                     self.botcredito.setDisabled(True)
@@ -138,7 +138,7 @@ class ViewClientes(QMainWindow):
                     for i in range(len(self.inputs)):
                         self.inputs[i].setText("")
                     self.RefreshTableData()
-                    alert(text='Se editó correctamente', title='Operación exitosa!', button='OK')
+                    #alert(text='Se editó correctamente', title='Operación exitosa!', button='OK')
                     self.boteditar.setDisabled(True)
                     self.boteliminar.setDisabled(True)
                     self.botcredito.setDisabled(True)
@@ -155,7 +155,7 @@ class ViewClientes(QMainWindow):
             if opc=="OK":
                 id=self.tableClient.item(row, 0).text()
                 if self.con.DeleteClient(id)!=False and self.con.DeleteCredits(id):
-                    alert(title="Listo!",text="Se eliminó correctamente",button="OK")
+                    #alert(title="Listo!",text="Se eliminó correctamente",button="OK")
                     for i in range(len(self.inputs)):
                         self.inputs[i].setText("")
                     try:

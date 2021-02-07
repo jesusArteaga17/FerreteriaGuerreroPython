@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import  QShortcut,QTableWidgetItem,QMainWindow
-from PyQt5 import uic,QtWidgets,QtGui
+from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView
+from PyQt5.QtGui import QKeySequence
+from PyQt5.uic import loadUi
 from pymsgbox import *
 from datetime import datetime
 import sys
@@ -19,7 +20,7 @@ class ViewInventario(QMainWindow):
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
         #bandera para saber cuando esta habilitada la opcion de editar un producto
-        uic.loadUi("inventarioUI.ui",self)
+        loadUi("inventarioUI.ui",self)
         #Inicialización para los eventos de los botones
         self.botoneditar.clicked.connect(self.edita)
         self.botoneditar.setDisabled(True)
@@ -41,8 +42,8 @@ class ViewInventario(QMainWindow):
         self.stock.returnPressed.connect(self.edita)
         self.busqueda.textChanged.connect(self.buscar)
         self.busqueda.returnPressed.connect(self.enterBuscar)
-        self.preciocompra.textChanged.connect(self.valPreciocompra)
-        self.preciocompra.returnPressed.connect(self.surtir)
+        self.preciopublico.textChanged.connect(self.valPreciopublico)
+        self.preciopublico.returnPressed.connect(self.surtir)
         self.cantidadadquirida.textChanged.connect(self.valCantidadadquirida)
         self.cantidadadquirida.returnPressed.connect(self.surtir)
         self.pagina.returnPressed.connect(self.ShowPage)
@@ -51,12 +52,12 @@ class ViewInventario(QMainWindow):
         self.tablaproductos.clicked.connect(self.rowClicked)
         #configuracion de la cabecera de mi tabla
         tablaProductos = self.tablaproductos.horizontalHeader()
-        tablaProductos.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProductos.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProductos.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        tablaProductos.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProductos.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        tablaProductos.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(2, QHeaderView.Stretch)
+        tablaProductos.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de productos
         self.inputs = [self.stockminimo,self.stockmaximo,self.stock]
 
@@ -72,24 +73,22 @@ class ViewInventario(QMainWindow):
         self.pagina.setText(str(pagina))
         self.total_paginas.setText(str(pagina))
         self.RefreshTableData()
-        shortcut3 = QShortcut(QtGui.QKeySequence("Ctrl+e"), self)
+        shortcut3 = QShortcut(QKeySequence("Ctrl+e"), self)
         shortcut3.activated.connect(self.edita)
-        shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
+        shortcut5 = QShortcut(QKeySequence("Esc"), self)
         shortcut5.activated.connect(self.close)
 
     def surtir(self):
-        if self.valCantidadadquirida() and self.valPreciocompra():
+        if self.valCantidadadquirida() and self.valPreciopublico():
             row=self.tablaproductos.currentRow()
             codigo=self.tablaproductos.item(row,0).text()
             opc = confirm(text="Desea surtir " +self.cantidadadquirida.text()+" productos?", title="Surtir?",
                           buttons=["OK", "CANCEL"])
             if opc=="OK":
-                producto=self.con.GetProductByCode(codigo)
-                preciocompra=self.preciocompra.text()
-                preciopublico=str(float(preciocompra)+float(producto[0]['utilidades']))
+                preciopublico=self.preciopublico.text()
                 stock=str(float(self.tablaproductos.item(row,5).text())+float(self.cantidadadquirida.text()))
-                if self.con.Surtir(codigo,preciocompra,preciopublico,stock):
-                    alert(title="Correcto",text="Operación exitosa")
+                if self.con.Surtir(codigo,preciopublico,stock):
+                    #alert(title="Correcto",text="Operación exitosa")
                     self.clean()
                     self.botonsurtir.setDisabled(True)
                     self.botoneditar.setDisabled(True)
@@ -99,6 +98,8 @@ class ViewInventario(QMainWindow):
         else:
             alert (title="Error",text="Revise el formulario")
     def edita(self):
+        if not self.botoneditar.isEnabled():
+            return False
         if self.valida_formulario():
             row = self.tablaproductos.currentRow()
             opc = confirm(text="Desea editar " + str(self.tablaproductos.item(row, 1).text()) + "?", title="Editar?",
@@ -124,15 +125,13 @@ class ViewInventario(QMainWindow):
     def rowClicked(self):
         try:
             row= self.tablaproductos.currentRow()
-            #col=self.tablaproductos.currentColumn()
+            producto=self.con.GetProductByCode(self.tablaproductos.item(row,0).text())
+            self.preciopublico.setText(str(producto[0]['preciopublico']))
             self.stockminimo.setText(self.tablaproductos.item(row,3).text())
             self.stockmaximo.setText(self.tablaproductos.item(row,4).text())
             self.stock.setText(self.tablaproductos.item(row,5).text())
             self.botoneditar.setDisabled(False)
             self.botonsurtir.setDisabled(False)
-            self.cantidad_bodega=float(self.tablaproductos.item(row,6).text())
-            self.cantidad_stock=float(self.tablaproductos.item(row,5).text())
-
         except:
             pass
     def valStockminimo(self):
@@ -171,14 +170,20 @@ class ViewInventario(QMainWindow):
         return res
     def valCantidadadquirida(self):
         input = self.cantidadadquirida
+        if input.text()=='':
+            input.setStyleSheet(self.falseValidate)
+            return False
         res = self.valida.validaDecimal(input.text())
         if res:
             input.setStyleSheet(self.trueValidate)
         else:
             input.setStyleSheet(self.falseValidate)
         return res
-    def valPreciocompra(self):
-        input = self.preciocompra
+    def valPreciopublico(self):
+        input = self.preciopublico
+        if input.text()=='':
+            input.setStyleSheet(self.falseValidate)
+            return False
         res = self.valida.validaDecimal(input.text())
         if res:
             input.setStyleSheet(self.trueValidate)
@@ -218,6 +223,19 @@ class ViewInventario(QMainWindow):
                 self.tablaproductos.setItem(0, 3, QTableWidgetItem(str(productos[i]['stockminimo'])))
                 self.tablaproductos.setItem(0, 4, QTableWidgetItem(str(productos[i]['stockmaximo'])))
                 self.tablaproductos.setItem(0, 5, QTableWidgetItem(str(productos[i]['stock'])))
+            if int(self.pagina.text())<=1 and self.total_paginas.text()=='1':
+                self.anterior.setEnabled(False)
+                self.siguiente.setEnabled(False)
+            elif int(self.pagina.text())<=1:
+                self.anterior.setEnabled(False)
+                self.siguiente.setEnabled(True)
+            elif int(self.pagina.text())==int(self.total_paginas.text()) and int(self.pagina.text())>1:
+                self.siguiente.setEnabled(False)
+                self.anterior.setEnabled(True)
+            else:
+                self.siguiente.setEnabled(True)
+                self.anterior.setEnabled(True)
+
         else:
             alert(title="Error de servidor!", text="Asegurese que el servidor XAMPP este activo", button="OK")
     def ShowSiguiente(self):
@@ -261,7 +279,7 @@ class ViewInventario(QMainWindow):
         self.stockminimo.setText('0')
         self.stockmaximo.setText('0')
         self.stock.setText('0')
-        self.preciocompra.setText('')
+        self.preciopublico.setText('')
         self.cantidadadquirida.setText('')
         self.botoneditar.setEnabled(False)
         self.botonsurtir.setEnabled(False)

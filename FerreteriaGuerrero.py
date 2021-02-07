@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication,QMainWindow
+from PyQt5.uic import loadUi
 from index import Index
 from pymsgbox import alert
 from conexion import Conexion
@@ -8,7 +7,7 @@ import sys
 class Login(QMainWindow):
     def __init__(self,conexion,*args, **kwargs):
         super(Login, self).__init__(*args, **kwargs)
-        uic.loadUi("Login.ui", self)
+        loadUi("Login.ui", self)
         #inicializamos el objeto conexion
         self.con=conexion
         #conectamos a los botones aceptar con su funcion

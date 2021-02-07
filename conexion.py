@@ -1,5 +1,4 @@
 import pymysql
-from random import randrange
 class Conexion():
     def __init__(self):
         f = open('config/db.txt', 'r')
@@ -49,18 +48,24 @@ class Conexion():
             if self.conexion:
                 print('conectectado al host: ' + host)
         except:
-            print ('no hubo conexion')
+            try:
+                self.conexion = pymysql.connect(host='localhost', port=int(port), user=user, passwd=passwd,
+                                                db="ferreteria_guerrero")
+                if self.conexion:
+                    print('conectectado al host: localhost')
+            except:
+                print('no hubo conexion')
     def close(self):
         self.conexion.close()
     def AllProducts(self):
         con=self.conexion
         if con!=False:
             cursor=con.cursor()
-            cursor.execute("select * from productos")
+            cursor.execute("select * from productos ")
             con.commit()
             resultado=[]
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
 
             return (resultado)
         else:
@@ -73,9 +78,7 @@ class Conexion():
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock'], producto)))
-
+                resultado.append(dict(zip(['id', 'codigo', 'producto', 'grupo', 'preciopublico', 'stockminimo', 'stockmaximo', 'stock'],producto)))
             return (resultado)
         else:
             return False
@@ -84,9 +87,8 @@ class Conexion():
         if con != False:
             cursor=con.cursor()
             cursor.execute(
-                "INSERT  INTO productos (codigo,producto,grupo,utilidades,preciocompra,stock,preciopublico)VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                (producto['codigo'],producto['producto'],producto['grupo'],producto['utilidades'],
-                 producto['preciocompra'],producto['stock'],producto['preciopublico']))
+                "INSERT  INTO productos (codigo,producto,grupo,preciopublico,stockminimo,stockmaximo,stock)VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                (producto['codigo'],producto['producto'],producto['grupo'],producto['preciopublico'],producto['stockminimo'],producto['stockmaximo'],producto['stock']))
             # Guardar cambios.
             con.commit()
             id=cursor.lastrowid
@@ -99,8 +101,8 @@ class Conexion():
         if con!=False:
             cursor=con.cursor()
             cursor.execute(
-                "UPDATE `productos` SET `codigo` = %s, `producto` = %s, `grupo` = %s, `utilidades` = %s, `preciocompra` = %s, `stock` = %s, `preciopublico` = %s WHERE `productos`.`codigo` = "+str(codigo),
-                (producto['codigo'], producto['producto'], producto['grupo'], producto['utilidades'],producto['preciocompra'], producto['stock'], producto['preciopublico']))
+                "UPDATE `productos` SET `codigo` = %s, `producto` = %s, `grupo` = %s, `preciopublico` = %s, `stockminimo` = %s, `stockmaximo` = %s, `stock` = %s WHERE `productos`.`codigo` = "+str(codigo),
+                (producto['codigo'], producto['producto'], producto['grupo'], producto['preciopublico'],producto['stockminimo'], producto['stockmaximo'], producto['stock']))
             con.commit()
 
             return True
@@ -134,11 +136,11 @@ class Conexion():
         con = self.conexion
         if con!=False:
             cursor = con.cursor()
-            cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo")
+            cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo ORDER BY producto ASC")
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','utilidades','preciocompra','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
 
             return (resultado)
         else:
@@ -157,29 +159,16 @@ class Conexion():
             return (resultado)
         else:
             return False
-    def InsertProducts(self,n):
-        producto={}
-        for i in range(n):
-            producto['codigo']=str(randrange(0,99999999999999999999))
-            producto['producto']='product'+str(i)
-            producto['grupo']='grupo'+str(i)
-            producto['utilidades']=str(randrange(0,99999))
-            producto['preciocompra']=str(randrange(0,99999))
-            producto['stock']=str(randrange(0,99999))
-            producto['preciopublico']=str(randrange(0,99999))
-            self.AddProduct(producto)
-        print ('Termine')
     def FindProducts(self,cadena):
         con = self.conexion
         if con != False:
             cursor = con.cursor()
-            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%" OR codigo LIKE"%'+str(cadena)+'%"')
+            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%" OR codigo LIKE"%'+str(cadena)+'%" ORDER BY producto ASC')
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id', 'codigo', 'producto', 'grupo', 'utilidades', 'preciocompra', 'preciopublico', 'stockminimo',
-                     'stockmaximo', 'stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
             return (resultado)
         else:
             return False
@@ -187,13 +176,12 @@ class Conexion():
         con = self.conexion
         if con != False:
             cursor = con.cursor()
-            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%"')
+            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%" ORDER BY producto ASC')
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id', 'codigo', 'producto', 'grupo', 'utilidades', 'preciocompra', 'preciopublico', 'stockminimo',
-                     'stockmaximo', 'stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
             return (resultado)
         else:
             return False
@@ -206,8 +194,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id', 'codigo', 'producto', 'grupo', 'utilidades', 'preciocompra', 'preciopublico', 'stockminimo',
-                     'stockmaximo', 'stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
 
             return (resultado)
         else:
@@ -221,8 +208,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id', 'codigo', 'producto', 'grupo', 'utilidades', 'preciocompra', 'preciopublico', 'stockminimo',
-                     'stockmaximo', 'stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
 
             return (resultado)
         else:
@@ -465,14 +451,14 @@ class Conexion():
             return True
         else:
             return False
-    def Surtir(self,codigo,preciocompra,preciopublico,stock):
+    def Surtir(self,codigo,preciopublico,stock):
         con = self.conexion
         if con != False:
             cursor = con.cursor()
             cursor.execute(
-                "UPDATE `productos` SET `preciocompra` = %s,`preciopublico`=%s, `stock` = %s WHERE `productos`.`codigo` = " + str(
+                "UPDATE `productos` SET `preciopublico`=%s, `stock` = %s WHERE `productos`.`codigo` = " + str(
                     codigo),
-                (preciocompra,preciopublico, stock))
+                (preciopublico, stock))
             con.commit()
 
             return True
@@ -820,6 +806,6 @@ class Conexion():
 if __name__=="__main__":
     from datetime import datetime
     con=Conexion()
-    print(con.CleanAll())
+    print(con.GetProductByCode(13547))
 
 

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import   QDialog,QTableWidgetItem
-from PyQt5 import uic,QtWidgets
+from PyQt5.uic import loadUi
+from PyQt5.QtWidgets import QHeaderView
 from pymsgbox import *
 import sys
 class ViewAbonar(QDialog):
@@ -15,7 +16,7 @@ class ViewAbonar(QDialog):
         #Características de los imputs cuando son validados
         self.trueValidate="border: 2px solid green; font-size: 15px;"
         self.falseValidate="border: 2px solid red; font-size: 15px;"
-        uic.loadUi("Abonar.ui",self)
+        loadUi("Abonar.ui",self)
         #Inicialización para los eventos de los botones
         self.botabonar.clicked.connect(self.abonar)
         self.botcancelar.clicked.connect(self.cancelar)
@@ -25,12 +26,12 @@ class ViewAbonar(QDialog):
         self.abono.textChanged.connect(self.validaAbono)
         #configuracion de la cabecera de mi tabla
         header = self.tablecreditos.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         self.RefreshTableData()
         self.creditosview=True
         self.adeudo=0
@@ -62,8 +63,8 @@ class ViewAbonar(QDialog):
             labels = ('ID', 'Cliente', 'Fecha inicio', 'Fecha vencimiento', 'Descripción','Adeudo')
             self.tablecreditos.setHorizontalHeaderLabels(labels)
             header = self.tablecreditos.horizontalHeader()
-            header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-            header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+            header.setSectionResizeMode(1, QHeaderView.Stretch)
+            header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
             self.RefreshTableData()
     def validaAbono(self):
         input = self.abono
@@ -104,8 +105,8 @@ class ViewAbonar(QDialog):
                 self.tablecreditos.setItem(i, 3, QTableWidgetItem(str(productos[i]['fecha'])))
                 self.tablecreditos.setItem(i, 4, QTableWidgetItem(str(float(productos[i]['cantidad'])*float(productos[i]['precio']))))
                 header = self.tablecreditos.horizontalHeader()
-                header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-                header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+                header.setSectionResizeMode(0, QHeaderView.Stretch)
+                header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
     def RefreshTableData(self):
         self.creditos=self.con.AllCreditsSinpagar()
         index = self.tablecreditos.rowCount()

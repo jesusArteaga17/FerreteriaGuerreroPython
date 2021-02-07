@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import  QDialog
-from PyQt5 import uic
+from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from pymsgbox import *
 from datetime import datetime
@@ -7,7 +7,7 @@ from datetime import datetime
 class EmergenteAgendar(QDialog):
     def __init__(self, parametros,*args, **kwargs):
         super(EmergenteAgendar, self).__init__(*args, **kwargs)
-        uic.loadUi("emergente_agendar.ui", self)
+        loadUi("emergente_agendar.ui", self)
         #inicializamos el objeto conexion y el de datetime
         self.con=parametros['conexion']
         self.date=datetime.now()

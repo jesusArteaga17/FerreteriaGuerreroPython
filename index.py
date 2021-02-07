@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5 import uic
+from PyQt5.uic import loadUi
 from pymsgbox import *
 from ViewProductos import ViewProductos
 from ViewInventario import ViewInventario
@@ -14,7 +14,7 @@ class Index(QMainWindow):
     def __init__(self,parametros={},*args, **kwargs):
         self.user=parametros['user']
         super().__init__(*args, **kwargs)
-        uic.loadUi("MainWindowAdmin.ui",self)
+        loadUi("MainWindowAdmin.ui",self)
         self.botonProductos.setEnabled(int(self.user['productos']))
         self.botonInventario.setEnabled(int(self.user['inventario']))
         self.botonProveedores.setEnabled(int(self.user['proveedores']))

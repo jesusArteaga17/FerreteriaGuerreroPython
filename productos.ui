@@ -37,9 +37,9 @@ QPushButton{
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>340</y>
+      <y>380</y>
       <width>301</width>
-      <height>311</height>
+      <height>271</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -92,7 +92,7 @@ QPushButton{
       <x>1040</x>
       <y>10</y>
       <width>301</width>
-      <height>221</height>
+      <height>261</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -206,12 +206,12 @@ QPushButton{
           </font>
          </property>
          <property name="text">
-          <string>Utilidades </string>
+          <string>Stock mínimo </string>
          </property>
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QLineEdit" name="utilidades">
+        <widget class="QLineEdit" name="stockminimo">
          <property name="text">
           <string>0</string>
          </property>
@@ -229,12 +229,12 @@ QPushButton{
           </font>
          </property>
          <property name="text">
-          <string>Precio Compra</string>
+          <string>Stock máximo</string>
          </property>
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QLineEdit" name="preciocompra">
+        <widget class="QLineEdit" name="stockmaximo">
          <property name="text">
           <string>0</string>
          </property>
@@ -263,6 +263,20 @@ QPushButton{
          </property>
         </widget>
        </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="preciopublico">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Precio público</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -271,12 +285,15 @@ QPushButton{
     <property name="geometry">
      <rect>
       <x>1040</x>
-      <y>242</y>
+      <y>280</y>
       <width>271</width>
-      <height>101</height>
+      <height>99</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QPushButton" name="botonagregar">
        <property name="font">
@@ -349,14 +366,14 @@ QPushButton{
     <property name="geometry">
      <rect>
       <x>1310</x>
-      <y>230</y>
+      <y>280</y>
       <width>31</width>
-      <height>121</height>
+      <height>101</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <property name="spacing">
-      <number>5</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QPushButton" name="botonayudaadd">
@@ -376,6 +393,12 @@ QPushButton{
         <iconset>
          <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>22</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -387,6 +410,12 @@ QPushButton{
         <iconset>
          <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>22</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -397,6 +426,12 @@ QPushButton{
        <property name="icon">
         <iconset>
          <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>22</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -469,12 +504,17 @@ Background-color:rgb(255, 255, 255);
        </column>
        <column>
         <property name="text">
-         <string>Utilidades</string>
+         <string>Stock/mín</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Precio Compra</string>
+         <string>Stock/máx</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Existencia</string>
         </property>
        </column>
        <column>
