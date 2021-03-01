@@ -1,7 +1,7 @@
 #se define host, port, user, passwd 
 #por defecto el sistema conecta a localhost,3306, root,''
 #El host cada octeto debe de ir separado por un punto
-host=192.168.1.74
+host=localhost
 port=3306
 user=root
 passwd=

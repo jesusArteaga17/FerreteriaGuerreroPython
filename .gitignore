@@ -1,2 +1,11 @@
 .idea
 _pycache_
+build/
+Clientes/
+FerreteriaGuerrero/
+interfacesviejas/
+Inventario/
+productos/
+proveedores/
+Ticket.docx
+Ticket.txt

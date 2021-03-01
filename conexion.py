@@ -65,7 +65,7 @@ class Conexion():
             con.commit()
             resultado=[]
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
 
             return (resultado)
         else:
@@ -78,7 +78,7 @@ class Conexion():
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id', 'codigo', 'producto', 'grupo', 'preciopublico', 'stockminimo', 'stockmaximo', 'stock'],producto)))
+                resultado.append(dict(zip(['id', 'codigo', 'producto', 'grupo', 'preciopublico', 'stockminimo', 'stockmaximo', 'stock','proveedor'],producto)))
             return (resultado)
         else:
             return False
@@ -136,11 +136,11 @@ class Conexion():
         con = self.conexion
         if con!=False:
             cursor = con.cursor()
-            cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo ORDER BY producto ASC")
+            cursor.execute("SELECT * FROM `productos` WHERE stock<=stockminimo ORDER BY proveedor ASC")
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
-                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                resultado.append(dict(zip(['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
 
             return (resultado)
         else:
@@ -168,7 +168,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
             return (resultado)
         else:
             return False
@@ -181,7 +181,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
             return (resultado)
         else:
             return False
@@ -194,7 +194,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
 
             return (resultado)
         else:
@@ -208,7 +208,7 @@ class Conexion():
             resultado = []
             for producto in cursor.fetchall():
                 resultado.append(dict(zip(
-                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock'], producto)))
+                    ['id','codigo','producto','grupo','preciopublico','stockminimo','stockmaximo','stock','proveedor'], producto)))
 
             return (resultado)
         else:
@@ -223,7 +223,32 @@ class Conexion():
             return resultado[0][0]
         else:
             return False
-
+    def DevuelveProduct(self,opcs):
+        con = self.conexion
+        if con != False:
+            cursor = con.cursor()
+            cursor.execute(
+                "UPDATE productos SET stock = stock + %s WHERE producto= '" + str(opcs['producto'])+"'",opcs['cantidad'])
+            con.commit()
+            if opcs['accion']=='eliminaventa':
+                #eliminamos los productos y la venta
+                cursor.execute(
+                "DELETE FROM productos_ventas WHERE id_venta="+str(opcs['id_venta']))
+                con.commit()
+                cursor.execute("DELETE FROM ventas WHERE id="+str(opcs['id_venta']))
+                con.commit()
+            elif opcs['accion']=='eliminaproducto':
+                cursor.execute(
+                "DELETE FROM productos_ventas WHERE id_venta="+str(opcs['id_venta'])+" AND producto='"+str(opcs['producto'])+"'")
+                con.commit()
+            else:
+                #se resta una cantidad al prodcuto vendido
+                cursor.execute(
+                "UPDATE productos_ventas SET cantidad = cantidad - %s WHERE producto= '"+str(opcs['producto'])+"' AND id_venta="+str(opcs['id_venta']),(opcs['cantidad']))
+                con.commit()
+            return True
+        else:
+            return False
     def AddUser(self,user):
         con = self.conexion
         if con != False:
@@ -443,22 +468,21 @@ class Conexion():
         if con != False:
             cursor = con.cursor()
             cursor.execute(
-                "UPDATE `productos` SET `stockminimo` = %s, `stockmaximo` = %s, `stock` = %s WHERE `productos`.`codigo` = " + str(
+                "UPDATE `productos` SET `stockminimo` = %s, `stockmaximo` = %s, `stock` = %s, proveedor=%s WHERE `productos`.`codigo` = " + str(
                     codigo),
-                (producto['stockminimo'], producto['stockmaximo'], producto['stock']))
+                (producto['stockminimo'], producto['stockmaximo'], producto['stock'],producto['proveedor']))
             con.commit()
 
             return True
         else:
             return False
-    def Surtir(self,codigo,preciopublico,stock):
+    def Surtir(self,codigo,preciopublico,stock,proveedor):
         con = self.conexion
         if con != False:
             cursor = con.cursor()
             cursor.execute(
-                "UPDATE `productos` SET `preciopublico`=%s, `stock` = %s WHERE `productos`.`codigo` = " + str(
-                    codigo),
-                (preciopublico, stock))
+                "UPDATE `productos` SET `preciopublico`=%s, `stock` = %s, `proveedor`=%s WHERE `productos`.`codigo` = " + str(codigo),
+                (preciopublico, stock,proveedor))
             con.commit()
 
             return True
@@ -785,9 +809,9 @@ class Conexion():
             cursor.execute("DELETE FROM `ventas`")
             # Guardar cambios.
             con.commit()
-            cursor.execute("DELETE FROM `usuarios` where nombre_usuario!='Admministrador'")
+            #cursor.execute("DELETE FROM `usuarios` where nombre_usuario!='Admministrador'")
             # Guardar cambios.
-            con.commit()
+            #con.commit()
             cursor.execute("DELETE FROM `clientes`")
             con.commit()
             cursor.execute("ALTER TABLE ventas AUTO_INCREMENT=0")
@@ -806,6 +830,6 @@ class Conexion():
 if __name__=="__main__":
     from datetime import datetime
     con=Conexion()
-    print(con.GetProductByCode(13547))
+    print(con.prueba(4))
 
 

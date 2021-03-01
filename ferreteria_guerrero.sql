@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-01-2021 a las 09:17:42
+-- Tiempo de generación: 10-02-2021 a las 10:03:48
 -- Versión del servidor: 10.1.34-MariaDB
 -- Versión de PHP: 7.2.8
 
@@ -97,16 +97,13 @@ CREATE TABLE `eventos` (
 
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
-  `codigo` int(11) NOT NULL,
+  `codigo` varchar(20) NOT NULL,
   `producto` varchar(50) NOT NULL,
   `grupo` varchar(50) NOT NULL DEFAULT '---',
-  `utilidades` float NOT NULL DEFAULT '0',
-  `preciocompra` float NOT NULL DEFAULT '0',
   `preciopublico` float NOT NULL DEFAULT '0',
   `stockminimo` int(11) NOT NULL DEFAULT '0',
   `stockmaximo` int(11) NOT NULL DEFAULT '0',
-  `stock` float NOT NULL DEFAULT '0',
-  `bodega` float NOT NULL DEFAULT '0'
+  `stock` float NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -179,6 +176,13 @@ CREATE TABLE `usuarios` (
   `creditos` tinyint(1) NOT NULL,
   `ventas` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre_usuario`, `contrasena`, `productos`, `inventario`, `proveedores`, `clientes`, `creditos`, `ventas`) VALUES
+(12, 'Administrador', '123', 1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -270,7 +274,7 @@ ALTER TABLE `eventos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -282,7 +286,7 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`

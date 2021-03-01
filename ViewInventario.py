@@ -58,9 +58,16 @@ class ViewInventario(QMainWindow):
         tablaProductos.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         tablaProductos.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         tablaProductos.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        tablaProductos.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de productos
         self.inputs = [self.stockminimo,self.stockmaximo,self.stock]
-
+        #agregamos los proveedores a las listas
+        self.proveedores=self.con.AllProveedores()
+        for i in range(len(self.proveedores)):
+            self.proveedor1.insertItem(i+1,self.proveedores[i]['nombre'])
+            self.proveedor2.insertItem(i+1,self.proveedores[i]['nombre'])
+        self.proveedor1.setCurrentIndex(0)
+        self.proveedor2.setCurrentIndex(0)
         #Refrescamos por primera vez las tablas
         numproducts = self.con.GetNumProducts()
         pagina=1
@@ -87,12 +94,14 @@ class ViewInventario(QMainWindow):
             if opc=="OK":
                 preciopublico=self.preciopublico.text()
                 stock=str(float(self.tablaproductos.item(row,5).text())+float(self.cantidadadquirida.text()))
-                if self.con.Surtir(codigo,preciopublico,stock):
+                proveedor=self.proveedor2.currentText()
+                if self.con.Surtir(codigo,preciopublico,stock,proveedor):
                     #alert(title="Correcto",text="Operación exitosa")
                     self.clean()
                     self.botonsurtir.setDisabled(True)
                     self.botoneditar.setDisabled(True)
                     self.tablaproductos.setItem(row, 5, QTableWidgetItem(str(stock)))
+                    self.tablaproductos.setItem(row, 6, QTableWidgetItem(str(proveedor)))
                 else:
                     alert(title="Error",text="Revise que el servidor XAMPP este activo")
         else:
@@ -109,17 +118,18 @@ class ViewInventario(QMainWindow):
                 producto['stockminimo'] = self.stockminimo.text()
                 producto['stockmaximo'] = self.stockmaximo.text()
                 producto['stock'] = self.stock.text()
+                producto['proveedor']=self.proveedor1.currentText()
                 codigo = self.tablaproductos.item(row, 0).text()
                 if self.con.UpdateInventario(codigo, producto) != False:
                     self.clean()
                     self.tablaproductos.setItem(row, 3, QTableWidgetItem(str(producto['stockminimo'])))
                     self.tablaproductos.setItem(row, 4, QTableWidgetItem(str(producto['stockmaximo'])))
                     self.tablaproductos.setItem(row, 5, QTableWidgetItem(str(producto['stock'])))
+                    self.tablaproductos.setItem(row, 6, QTableWidgetItem(str(producto['proveedor'])))
                     self.botoneditar.setDisabled(True)
                     self.botonsurtir.setDisabled(True)
                 else:
-                    alert(title="Error en el servidor!", text="Revise que el servidor XAMPP este activo",
-                          button="OK")
+                    pass
         else:
             alert(title="Error en formulario!", text="Revise el formulario", button='OK')
     def rowClicked(self):
@@ -130,10 +140,15 @@ class ViewInventario(QMainWindow):
             self.stockminimo.setText(self.tablaproductos.item(row,3).text())
             self.stockmaximo.setText(self.tablaproductos.item(row,4).text())
             self.stock.setText(self.tablaproductos.item(row,5).text())
+            proveedor=self.tablaproductos.item(row,6).text()
+            for i in range(len(self.proveedores)):
+                if self.proveedores[i]['nombre']==proveedor:
+                    self.proveedor1.setCurrentIndex(i+1)
+                    self.proveedor2.setCurrentIndex(i+1)
             self.botoneditar.setDisabled(False)
             self.botonsurtir.setDisabled(False)
         except:
-            pass
+            print('ocurrio un error no mms')
     def valStockminimo(self):
         input = self.stockminimo
         res=True
@@ -223,6 +238,7 @@ class ViewInventario(QMainWindow):
                 self.tablaproductos.setItem(0, 3, QTableWidgetItem(str(productos[i]['stockminimo'])))
                 self.tablaproductos.setItem(0, 4, QTableWidgetItem(str(productos[i]['stockmaximo'])))
                 self.tablaproductos.setItem(0, 5, QTableWidgetItem(str(productos[i]['stock'])))
+                self.tablaproductos.setItem(0, 6, QTableWidgetItem(str(productos[i]['proveedor'])))
             if int(self.pagina.text())<=1 and self.total_paginas.text()=='1':
                 self.anterior.setEnabled(False)
                 self.siguiente.setEnabled(False)
@@ -283,6 +299,8 @@ class ViewInventario(QMainWindow):
         self.cantidadadquirida.setText('')
         self.botoneditar.setEnabled(False)
         self.botonsurtir.setEnabled(False)
+        self.proveedor1.setCurrentIndex(0)
+        self.proveedor2.setCurrentIndex(0)
     def showStockMin(self):
         productos = self.con.AllStockMinimo()
         self.clean()
@@ -299,6 +317,7 @@ class ViewInventario(QMainWindow):
                 self.tablaproductos.setItem(i, 3, QTableWidgetItem(str(productos[i]['stockminimo'])))
                 self.tablaproductos.setItem(i, 4, QTableWidgetItem(str(productos[i]['stockmaximo'])))
                 self.tablaproductos.setItem(i, 5, QTableWidgetItem(str(productos[i]['stock'])))
+                self.tablaproductos.setItem(i, 6, QTableWidgetItem(str(productos[i]['proveedor'])))
         else:
             alert(title="Error de servidor!", text="Asegurese que el servidor XAMPP este activo", button="OK")
     def ayudaSurtir(self):

@@ -9,6 +9,7 @@ class ViewProductos(QMainWindow):
     formValid=False
     def __init__(self,parametros={}, *args, **kwargs):
         super(ViewProductos, self).__init__(*args, **kwargs)
+        
         #instanciamos el objeto de conexion a base de datos
         self.con=parametros['conexion']
         #instanciamiento de mi clase Valida
@@ -230,9 +231,14 @@ class ViewProductos(QMainWindow):
                         self.inputs[i].setText("")
                     try:
                         numproducts = self.con.GetNumProducts()
-                        total_paginas = int(numproducts / 50)
-                        if numproducts % 50 > 0:
-                            total_paginas += 1
+                        pagina = 1
+                        if numproducts != 0:
+                            pagina = int(numproducts / 50)
+                            if numproducts % 50 > 0:
+                                pagina += 1
+                        if pagina<=1:
+                            self.anterior.setEnabled(False)
+                        self.pagina.setText(str(pagina))
                         self.total_paginas.setText(str(total_paginas))
                         if int(self.pagina.text())>int(self.total_paginas.text()):
                             self.pagina.setText(self.total_paginas.text())
