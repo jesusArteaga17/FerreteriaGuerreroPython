@@ -1,5 +1,6 @@
 from os import startfile
-from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow,QHeaderView
+from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow,QHeaderView,QShortcut
+from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
 from pymsgbox import *
 from datetime import datetime
@@ -58,12 +59,6 @@ class ViewVentas(QMainWindow):
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
-        #Obteniendo todos los productos de la base de datos
-        """productos=self.con.AllProducts()
-        self.productos={}
-        for producto in productos:
-            self.productos[str(producto['codigo'])]=producto
-        #obteniendo los datos de los clientes"""
         self.clientes=self.con.AllClients()
         for i in range(len(self.clientes)):
             self.cliente.insertItem(0,self.clientes[i]['nombre']+' '+self.clientes[i]['apellidos'])
@@ -72,14 +67,16 @@ class ViewVentas(QMainWindow):
         if len(creditos)>0:
             self.radiocredito.setEnabled(True)
         #Definiendo los atajos
-        #shortcut1 = QShortcut(QtGui.QKeySequence("Ctrl+b"), self)
-        #shortcut1.activated.connect(self.setFocusBuscar)
+        shortcut1 = QShortcut(QKeySequence("Ctrl+b"), self)
+        shortcut1.activated.connect(self.setFocusBuscar)
         #shortcut3 = QShortcut(QtGui.QKeySequence("Ctrl+e"), self)
         #shortcut3.activated.connect(self.edita)
-        #shortcut4 = QShortcut(QtGui.QKeySequence("Ctrl+d"), self)
-        #shortcut4.activated.connect(self.elimina)
-        #shortcut5 = QShortcut(QtGui.QKeySequence("Ctrl+Enter"), self)
-        #shortcut5.activated.connect(self.setFocusBuscar)
+        shortcut4 = QShortcut(QKeySequence("Ctrl+d"), self)
+        shortcut4.activated.connect(self.quitarproducto)
+        shortcut5 = QShortcut(QKeySequence("Ctrl+s"), self)
+        shortcut5.activated.connect(self.guardar)
+        shortcut6 = QShortcut(QKeySequence("Ctrl+h"), self)
+        shortcut6.activated.connect(self.historial)
         self.carrito=[]
         self.colacarritos={}
         self.montototal=0
@@ -285,13 +282,14 @@ class ViewVentas(QMainWindow):
         view = ViewHistorial(self.parametros,self)
         view.show()
     def quitarproducto(self):
-        row=self.tableventas.currentRow()
-        self.tableventas.removeRow(row)
-        self.calculaMontototal()
-        self.cantidad.setText("0")
-        self.cantidad.setEnabled(False)
-        self.botquitar.setEnabled(False)
-        self.setFocusBuscar()
+        if self.botquitar.isEnabled():
+            row=self.tableventas.currentRow()
+            self.tableventas.removeRow(row)
+            self.calculaMontototal()
+            self.cantidad.setText("0")
+            self.cantidad.setEnabled(False)
+            self.botquitar.setEnabled(False)
+            self.setFocusBuscar()
     def calculaMontototal(self):
         index=self.tableventas.rowCount()
         self.montototal=0
@@ -494,12 +492,15 @@ class ViewVentas(QMainWindow):
         self.pago.setSelection(0, 9999)
         self.pago.setFocus()
     def buscar(self):
+        busqueda=str(self.busqueda.text())
+        if busqueda=="":
+            self.pago.setSelection(0,9999)
+            self.pago.setFocus()
+            return True
         index=self.tableventas.rowCount()
         #print ('index='+str(index))
         self.enterBuscar()
         try:
-            #se ejecuta este bloque de codigo en caso de comprobar que sea un codigo de producto
-            busqueda=str(self.busqueda.text())
             #no borrar esta linea es para saber si se trata de un codigo o de el nombre de un producto
             a=int(self.busqueda.text())
             #este es para el caso de que encuentre el mismo producto en la tabla por medio de codigo

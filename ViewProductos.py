@@ -32,7 +32,7 @@ class ViewProductos(QMainWindow):
         self.siguiente.clicked.connect(self.ShowSiguiente)
         #Inicialización de los eventos para los inputs
         self.codigo.textChanged.connect(self.valCodigo)
-        self.codigo.returnPressed.connect(self.agrega)
+        self.codigo.returnPressed.connect(self.enter_codigo)
 
         self.producto.textChanged.connect(self.valProducto)
         self.producto.returnPressed.connect(self.agrega)
@@ -52,7 +52,7 @@ class ViewProductos(QMainWindow):
         self.stock.returnPressed.connect(self.agrega)
         self.stock.textChanged.connect(self.valExistencia)
 
-        self.busqueda.textChanged.connect(self.buscar)
+        self.busqueda.returnPressed.connect(self.buscar)
         self.busqueda.setFocus()
         self.pagina.returnPressed.connect(self.ShowPage)
         self.pagina.textChanged.connect(self.valPagina)
@@ -265,6 +265,8 @@ class ViewProductos(QMainWindow):
                 self.inputs[i].setText(self.tablaproductos.item(row,i).text())
             self.botoneditar.setEnabled(True)
             self.botoneliminar.setEnabled(True)
+            self.codigo.setSelection(0,9999)
+            self.codigo.setFocus()
         except:
             pass
     def valida_formulario(self,accion):
@@ -491,7 +493,7 @@ class ViewProductos(QMainWindow):
                                  "1.- Seleccione el producto a eliminar de la tabla \n"
                                  "2.- Hacer click en el boton 'Eliminar' o precionar 'Ctrl + d'")
     def buscar(self):
-        if self.busqueda.text()!="" and len(self.busqueda.text())>3:
+        if self.busqueda.text()!="":
             busqueda=self.busqueda.text()
             self.productos=self.con.FindProducts(busqueda)
             coincidencias=self.productos
@@ -515,6 +517,9 @@ class ViewProductos(QMainWindow):
             self.botoneditar.setEnabled(False)
             self.botoneliminar.setEnabled(False)
             self.RefreshTableData()
+    def enter_codigo(self):
+        self.producto.setSelection(0, 9999)
+        self.producto.setFocus()
     def enterBuscar(self):
         self.busqueda.setSelection(0, 9999)
     def setFocusBuscar(self):

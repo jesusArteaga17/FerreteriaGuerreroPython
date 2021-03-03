@@ -141,10 +141,14 @@ class ViewInventario(QMainWindow):
             self.stockmaximo.setText(self.tablaproductos.item(row,4).text())
             self.stock.setText(self.tablaproductos.item(row,5).text())
             proveedor=self.tablaproductos.item(row,6).text()
-            for i in range(len(self.proveedores)):
-                if self.proveedores[i]['nombre']==proveedor:
-                    self.proveedor1.setCurrentIndex(i+1)
-                    self.proveedor2.setCurrentIndex(i+1)
+            if proveedor=="Desconocido":
+                self.proveedor1.setCurrentIndex(0)
+                self.proveedor2.setCurrentIndex(0)
+            else:
+                for i in range(len(self.proveedores)):
+                    if self.proveedores[i]['nombre']==proveedor:
+                        self.proveedor1.setCurrentIndex(i+1)
+                        self.proveedor2.setCurrentIndex(i+1)
             self.botoneditar.setDisabled(False)
             self.botonsurtir.setDisabled(False)
         except:
