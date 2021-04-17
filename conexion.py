@@ -176,7 +176,7 @@ class Conexion():
         con = self.conexion
         if con != False:
             cursor = con.cursor()
-            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%" ORDER BY producto ASC')
+            cursor.execute('SELECT * FROM productos WHERE producto LIKE "%'+str(cadena)+'%" OR grupo LIKE"%'+str(cadena)+'%" ORDER BY grupo ASC')
             con.commit()
             resultado = []
             for producto in cursor.fetchall():
@@ -830,6 +830,7 @@ class Conexion():
 if __name__=="__main__":
     from datetime import datetime
     con=Conexion()
-    print(con.prueba(4))
+    for prod in con.FindProducts2("cople"):
+        print(prod)
 
 

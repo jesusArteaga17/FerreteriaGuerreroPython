@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow,QShortcut
+from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
 from pymsgbox import *
 from ViewProductos import ViewProductos
@@ -37,6 +38,21 @@ class Index(QMainWindow):
         self.parametros['usuario']=self.user['nombre_usuario']
         #print (user)
         self.firstCloseEvent=False
+        # Definiendo los atajos
+        shortcut1 = QShortcut(QKeySequence("F1"), self)
+        shortcut1.activated.connect(self.showProductos)
+        shortcut3 = QShortcut(QKeySequence("F2"), self)
+        shortcut3.activated.connect(self.showInventario)
+        shortcut4 = QShortcut(QKeySequence("F3"), self)
+        shortcut4.activated.connect(self.showProveedores)
+        shortcut5 = QShortcut(QKeySequence("F4"), self)
+        shortcut5.activated.connect(self.showClientes)
+        shortcut6 = QShortcut(QKeySequence("F5"), self)
+        shortcut6.activated.connect(self.showUsuarios)
+        shortcut7 = QShortcut(QKeySequence("F6"), self)
+        shortcut7.activated.connect(self.showVentas)
+        shortcut8 = QShortcut(QKeySequence("Esc"), self)
+        shortcut8.activated.connect(self.close)
     def closeEvent(self, event):
         if self.firstCloseEvent:
             opc=confirm(title='Salir?',text='Desea cerrar la ventana?',buttons=['Si','No'])

@@ -45,6 +45,9 @@ QPushButton{
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>2</number>
+       </property>
        <item>
         <widget class="QPushButton" name="botvigentes">
          <property name="font">
@@ -64,7 +67,7 @@ QPushButton{
        <item>
         <widget class="QPushButton" name="ayudavigentes">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -97,7 +100,7 @@ QPushButton{
        <item>
         <widget class="QPushButton" name="ayudavencidos">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -130,7 +133,7 @@ QPushButton{
        <item>
         <widget class="QPushButton" name="ayudapagados">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -163,7 +166,7 @@ QPushButton{
        <item>
         <widget class="QPushButton" name="ayudasinpagar">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -196,7 +199,7 @@ QPushButton{
        <item>
         <widget class="QPushButton" name="ayudatodos">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -214,8 +217,17 @@ QPushButton{
      </item>
      <item>
       <widget class="QTableWidget" name="tableCredit">
+       <property name="styleSheet">
+        <string notr="true">QTableView,QListView::section {
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
+}</string>
+       </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
        </property>
        <property name="sortingEnabled">
         <bool>false</bool>
@@ -266,8 +278,17 @@ QPushButton{
       <height>351</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QTableView,QListView::section {
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
+}</string>
+    </property>
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>true</bool>
     </property>
     <property name="sortingEnabled">
      <bool>false</bool>
@@ -315,19 +336,28 @@ QPushButton{
     <property name="geometry">
      <rect>
       <x>1160</x>
-      <y>0</y>
-      <width>186</width>
-      <height>221</height>
+      <y>10</y>
+      <width>181</width>
+      <height>245</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLineEdit" name="busqueda"/>
        </item>
        <item>
         <widget class="QPushButton" name="botbusqueda">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -341,6 +371,12 @@ QPushButton{
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout">
+       <property name="horizontalSpacing">
+        <number>3</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -350,6 +386,13 @@ QPushButton{
        </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="nombre"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Apellidos</string>
+         </property>
+        </widget>
        </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="apellidos"/>
@@ -394,31 +437,36 @@ QPushButton{
        <item row="5" column="1">
         <widget class="QLineEdit" name="direccion"/>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Apellidos</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>1162</x>
-      <y>222</y>
+      <x>1160</x>
+      <y>251</y>
       <width>181</width>
-      <height>141</height>
+      <height>111</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPushButton" name="botagregar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -438,7 +486,37 @@ QPushButton{
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="ayudaagregar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
         <widget class="QPushButton" name="boteditar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -458,9 +536,33 @@ QPushButton{
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="ayudaeditar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
         <widget class="QPushButton" name="boteliminar">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -484,7 +586,37 @@ QPushButton{
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="ayudaeliminar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
         <widget class="QPushButton" name="botcredito">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -503,65 +635,10 @@ QPushButton{
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="ayudaagregar">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ayudaeditar">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ayudaeliminar">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="ayudacredito">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

@@ -1,7 +1,8 @@
 from os import startfile
-from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow,QHeaderView,QShortcut
+from PyQt5.QtWidgets import QTableWidgetItem,QMainWindow,QHeaderView,QShortcut,QMenu,QAction,QActionGroup,QAbstractItemView
 from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import Qt
 from pymsgbox import *
 from datetime import datetime
 from Abonar import ViewAbonar
@@ -34,11 +35,13 @@ class ViewVentas(QMainWindow):
         self.carritos.currentIndexChanged.connect(self.elegirCarro)
         self.carritos.setEnabled(False)
         #Eventos de los botones
+        self.botbusqueda.clicked.connect(self.buscar)
         self.botguardar.clicked.connect(self.guardar)
         self.botquitar.clicked.connect(self.quitarproducto)
         self.botabonar.clicked.connect(self.abonar)
         self.bothistorial.clicked.connect(self.historial)
         self.botvender.clicked.connect(self.vender)
+        self.botcancelar.clicked.connect(self.cancelar)
         self.ayudaabonar.clicked.connect(self.ayudaAbonar)
         self.ayudaguardar.clicked.connect(self.ayudaGuardarCarro)
         self.ayudahistorial.clicked.connect(self.ayudaHistorial)
@@ -47,6 +50,7 @@ class ViewVentas(QMainWindow):
         #mandamos a selección el campo de busqueda
         self.busqueda.setFocus()
         #Inicialización de los eventos de la tabla
+        #self.tableventas.itemSelectionChanged.connect(self.rowClicked)
         self.tableventas.clicked.connect(self.rowClicked)
         #configuracion de la cabecera de mi tabla
         self.usuario=parametros['usuario']
@@ -59,6 +63,24 @@ class ViewVentas(QMainWindow):
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        # configuacion del manu contextual
+        self.tableventas.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableventas.customContextMenuRequested.connect(self.menuContextual)
+        # Deshabilitar edición
+        self.tableventas.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # Deshabilitar el comportamiento de arrastrar y soltar
+        self.tableventas.setDragDropOverwriteMode(False)
+        # Seleccionar toda la fila
+        self.tableventas.setSelectionBehavior(QAbstractItemView.SelectRows)
+        # Seleccionar una fila a la vez
+        self.tableventas.setSelectionMode(QAbstractItemView.SingleSelection)
+        # Especifica dónde deben aparecer los puntos suspensivos "..." cuando se muestran
+        # textos que no encajan
+        self.tableventas.setTextElideMode(Qt.ElideRight)  # Qt.ElideNone
+        # Establecer el ajuste de palabras del texto
+        self.tableventas.setWordWrap(False)
+        # Deshabilitar clasificación
+        self.tableventas.setSortingEnabled(False)
         self.clientes=self.con.AllClients()
         for i in range(len(self.clientes)):
             self.cliente.insertItem(0,self.clientes[i]['nombre']+' '+self.clientes[i]['apellidos'])
@@ -77,10 +99,21 @@ class ViewVentas(QMainWindow):
         shortcut5.activated.connect(self.guardar)
         shortcut6 = QShortcut(QKeySequence("Ctrl+h"), self)
         shortcut6.activated.connect(self.historial)
+        shortcut7 = QShortcut(QKeySequence("Esc"), self)
+        shortcut7.activated.connect(self.cancelar)
         self.carrito=[]
         self.colacarritos={}
         self.montototal=0
         self.estabuscando=False
+    def menuContextual(self, posicion):
+        indices = self.tableventas.selectedIndexes()
+        if indices and not self.estabuscando:
+            menu = QMenu()
+            itemsGrupo = QActionGroup(self)
+            itemsGrupo.setExclusive(True)
+            menu.addAction(QAction("Eliminar", itemsGrupo))
+            itemsGrupo.triggered.connect(self.quitarproducto)
+            menu.exec_(self.tableventas.viewport().mapToGlobal(posicion))
     def imprime(self):
         """Funcion para imprimir un ticket de prueba"""
         venta = {}
@@ -113,9 +146,31 @@ class ViewVentas(QMainWindow):
             self.clientes.append(cliente[0])
         for i in range(len(self.clientes)):
             self.cliente.insertItem(0,str(credits[i]['id'])+'.-'+ self.clientes[i]['nombre'] + ' ' + self.clientes[i]['apellidos'])
+    def cancelar(self):
+        if self.botcancelar.isEnabled():
+            self.botcancelar.setEnabled(False)
+            self.tableventas.setRowCount(0)
+            self.estabuscando=False
+            self.tableventas.setColumnHidden(4, False)
+            self.tableventas.setColumnHidden(6, False)
+            self.tableventas.setStyleSheet('QTableView,QListView::section {Background-color:rgb(255, 255, 255);alternate-background-color:rgb(200, 167, 255);}')
+            self.botcancelar.setEnabled(True)
+            if self.carritos.count()>0:
+                self.carritos.setEnabled(True)
+            self.botvender.setEnabled(True)
+            for i in range(len(self.carrito)-1,-1,-1):
+                self.tableventas.insertRow(0)
+                self.tableventas.setItem(0, 0, QTableWidgetItem(str(self.carrito[i]['codigo'])))
+                self.tableventas.setItem(0, 1, QTableWidgetItem(str(self.carrito[i]['producto'])))
+                self.tableventas.setItem(0, 2, QTableWidgetItem(str(self.carrito[i]['grupo'])))
+                self.tableventas.setItem(0, 3, QTableWidgetItem(str(self.carrito[i]['stock'])))
+                self.tableventas.setItem(0, 4, QTableWidgetItem(str(self.carrito[i]['cantidad'])))
+                self.tableventas.setItem(0, 5, QTableWidgetItem(str(self.carrito[i]['preciopublico'])))
+                self.tableventas.setItem(0, 6, QTableWidgetItem(str(self.carrito[i]['preciopublico'])))
     def guardar(self):
-        if self.tableventas.rowCount()>0:
+        if self.tableventas.rowCount()>0 and not self.estabuscando :
             self.montototal=0
+            self.total.setText('0')
             self.date = datetime.now()
             self.carrito = []
             numrenglones = self.tableventas.rowCount()
@@ -135,6 +190,7 @@ class ViewVentas(QMainWindow):
             self.carritos.insertItem(0,nombrecarro)
             self.carrito=[]
             self.total.setText('0')
+            self.pago.setText('0')
             for i in range(self.tableventas.rowCount()):
                 self.tableventas.removeRow(0)
             self.carritos.setCurrentIndex(-1)
@@ -282,27 +338,31 @@ class ViewVentas(QMainWindow):
         view = ViewHistorial(self.parametros,self)
         view.show()
     def quitarproducto(self):
-        if self.botquitar.isEnabled():
-            row=self.tableventas.currentRow()
-            self.tableventas.removeRow(row)
-            self.calculaMontototal()
-            self.cantidad.setText("0")
-            self.cantidad.setEnabled(False)
-            self.botquitar.setEnabled(False)
-            self.setFocusBuscar()
+        row=self.tableventas.currentRow()
+        self.tableventas.removeRow(row)
+        self.calculaMontototal()
+        self.cantidad.setText("0")
+        self.cantidad.setEnabled(False)
+        self.botquitar.setEnabled(False)
+        self.setFocusBuscar()
     def calculaMontototal(self):
-        index=self.tableventas.rowCount()
-        self.montototal=0
-        for i in range(index):
-            self.montototal+=float(self.tableventas.item(i,6).text())
-        self.montototal=round(self.montototal,2)
-        self.total.setText(str(self.montototal))
-        self.pago.setText(str(self.montototal))
+        if not self.estabuscando:
+            index=self.tableventas.rowCount()
+            self.montototal=0
+            for i in range(index):
+                self.montototal+=float(self.tableventas.item(i,6).text())
+            self.montototal=round(self.montototal,2)
+            self.total.setText(str(self.montototal))
+            self.pago.setText(str(self.montototal))
     def rowClicked(self):
         if self.estabuscando:
             #quiere decir que clickamos cuando el cuadro esta en modo seleccion de producto
-            self.estabuscando = not self.estabuscando
-            self.tableventas.setStyleSheet('')
+            self.estabuscando =False
+            self.botcancelar.setEnabled(False)
+            if self.carritos.count()>0:
+                self.carritos.setEnabled(True)
+            self.botvender.setEnabled(True)
+            self.tableventas.setStyleSheet('QTableView,QListView::section {Background-color:rgb(255, 255, 255);alternate-background-color:rgb(200, 167, 255);}')
             row=self.tableventas.currentRow()
             # ahumentamos el importe
             #obtenemos el producto seleccionado
@@ -310,7 +370,6 @@ class ViewVentas(QMainWindow):
             for i in range(self.tableventas.columnCount()):
                 seleccion.append(self.tableventas.item(row,i).text())
             #buscamos en el carrito si es que ya existe ese producto
-
             b=False
             for i in range(len(self.carrito)):
                 if self.carrito[i]['codigo']==self.tableventas.item(row,0).text():#Aqui encontro una coincidencia con el producto buscado
@@ -323,22 +382,10 @@ class ViewVentas(QMainWindow):
                         alert(title='Existencia agotada!', text="La cantidad solicitada del producto excede la\n"
                                                                 "existencia total del producto")
                     # vaciamos el contenido de la tabla
-                    for j in range(self.tableventas.rowCount()):
-                        self.tableventas.removeRow(0)
+                    self.tableventas.setRowCount(0)
                     #Reajustamos la tabla para que coincida con el modo carrito
-                    self.tableventas.setColumnCount(7)
-                    index = self.tableventas.rowCount()
-                    labels = ('Código', 'Producto', 'Grupo', 'Existencia', 'Cantidad', 'Precio/unidad', 'Importe')
-                    self.tableventas.setHorizontalHeaderLabels(labels)
-                    header = self.tableventas.horizontalHeader()
-                    header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                    header.setSectionResizeMode(1, QHeaderView.Stretch)
-                    header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                    header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                    header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                    header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
-                    header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
-
+                    self.tableventas.setColumnHidden(4, False)
+                    self.tableventas.setColumnHidden(6, False)
                     # insertamos los productos que tenemos guardados en el carrito
                     for j in range(len(self.carrito)):
                         self.tableventas.insertRow(j)
@@ -361,22 +408,10 @@ class ViewVentas(QMainWindow):
             #si la bandera "b" no cambia a True quiere decir que no se encontro el producto repetido en el carrito
             if b==False:
                 #vaciamos el contenido de la tabla
-                for i in range(self.tableventas.rowCount()):
-                    self.tableventas.removeRow(0)
+                self.tableventas.setRowCount(0)
                 #reajustamos la tabla para que coincida con el modo carrito
-                self.tableventas.setColumnCount(7)
-                index = self.tableventas.rowCount()
-                labels = ('Código', 'Producto', 'Grupo', 'Existencia', 'Cantidad', 'Precio/unidad', 'Importe')
-                self.tableventas.setHorizontalHeaderLabels(labels)
-                header = self.tableventas.horizontalHeader()
-                header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(1, QHeaderView.Stretch)
-                header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
-
+                self.tableventas.setColumnHidden(4, False)
+                self.tableventas.setColumnHidden(6,False)
                 #insertamos los productos que tenemos guardados en el carrito
                 for i in range(len(self.carrito)):
                     self.tableventas.insertRow(i)
@@ -398,8 +433,8 @@ class ViewVentas(QMainWindow):
                     self.tableventas.setItem(row, 2, QTableWidgetItem(seleccion[2]))
                     self.tableventas.setItem(row, 3, QTableWidgetItem(seleccion[3]))
                     self.tableventas.setItem(row, 4, QTableWidgetItem('1'))
-                    self.tableventas.setItem(row, 5, QTableWidgetItem(seleccion[4]))
-                    self.tableventas.setItem(row, 6, QTableWidgetItem(seleccion[4]))
+                    self.tableventas.setItem(row, 5, QTableWidgetItem(seleccion[5]))
+                    self.tableventas.setItem(row, 6, QTableWidgetItem(seleccion[5]))
                     self.tableventas.setCurrentCell(row, 0)
                     self.botquitar.setEnabled(True)
                     self.cantidad.setEnabled(True)
@@ -465,7 +500,7 @@ class ViewVentas(QMainWindow):
             input.setStyleSheet(self.falseValidate)
         return res
     def enterCantidad(self):
-        if self.validaCantidad():
+        if self.validaCantidad() and self.cantidad.isEnabled():
             row=self.tableventas.currentRow()
             cantidad=float(self.cantidad.text())
             existencia=float(self.tableventas.item(row,3).text())
@@ -491,110 +526,142 @@ class ViewVentas(QMainWindow):
     def setFocusPago(self):
         self.pago.setSelection(0, 9999)
         self.pago.setFocus()
+    def buscarCode(self,busqueda,index):
+        productos=self.con.GetProductByCode(busqueda)
+        try:
+            index=len(productos)
+            if index==0:
+                self.buscarName(busqueda,index)
+            else:
+                if self.estabuscando:
+                    ban=False#Bandera que cambiara a True en caso de encontrar una coincidencia en el carrito
+                    for i in range(len(self.carrito)):
+                        if busqueda==self.carrito[i]['codigo']:#buscamos coincidencias con el carrito
+                            #aqui se encontro una coincidencia con el carrito
+                            if float(self.carrito[i]['stock'])>float(self.carrito[i]['cantidad']):#Aqui verificamos si la cantidad a llevar es menor a la existencia
+                                #Si se puede sumar uno a la cantidad a llevar
+                                self.carrito[i]['cantidad']=str(float(self.carrito[i]['cantidad'])+1)#se suma una unidad
+                                self.carrito[i]['importe']=str(float(self.carrito[i]['cantidad'])*float(self.carrito[i]['cantidad']))
+                                ban=True
+                            else:
+                                alert(title='Producto insuficiente',text='La cantidad solicitada es mayor a la existencia')
+                                self.cancelar()
+                                return 0
+                    if not ban:
+                        #se ejecuta este codigo en caso de no encontrar coincidencias en el carrito
+                        producto=productos[0]
+                        if float(producto['stock'])>0:
+                            producto['cantidad']="1"
+                            producto['importe']=str(producto['preciopublico'])
+                            self.carrito.append(producto)
+                        else:
+                            alert(title='Producto insuficiente',text="La cantidad solicitada es mayor a la existencia")
+                            self.cancelar()
+                            return 0
+                    self.cancelar()                    
+                    self.calculaMontototal()
+                else:
+                    ban=False
+                    index=self.tableventas.rowCount()
+                    for i in range(index):
+                        if self.tableventas.item(i,0).text()==productos[0]['codigo']:
+                            #aqui se encuentra una coincidencia en la tabla de ventas
+                            print('Se encontro una cohincidencia')
+                            if float(self.tableventas.item(i,3).text())> float(self.tableventas.item(i,4).text()):
+                                print('Existe stock suficiente')
+                                #verificamos que el stock sea mayo que la cantidad a vender
+                                self.tableventas.setItem(i, 4, QTableWidgetItem(str(float(self.tableventas.item(i,4).text())+1)))
+                                self.tableventas.setItem(i, 6, QTableWidgetItem(str(float(self.tableventas.item(i,4).text())*float(self.tableventas.item(i,5).text()))))
+                                #self.tableventas.setItem(i, 0, QTableWidgetItem(carrito[i]['codigo']))
+                                self.calculaMontototal()
+                                return 0
+                            else:
+                                alert(title='Producto insuficiente',text='La cantidad solicitada es mayor a la existencia')
+                                return 0
+                    if not ban:
+                        producto=productos[0]
+                        if float(producto['stock'])>=1:
+                            self.tableventas.insertRow(0)
+                            self.tableventas.setItem(0, 0, QTableWidgetItem(str(producto['codigo'])))
+                            self.tableventas.setItem(0, 1, QTableWidgetItem(str(producto['producto'])))
+                            self.tableventas.setItem(0, 2, QTableWidgetItem(str(producto['grupo'])))
+                            self.tableventas.setItem(0, 3, QTableWidgetItem(str(producto['stock'])))
+                            self.tableventas.setItem(0, 4, QTableWidgetItem('1'))
+                            self.tableventas.setItem(0, 5, QTableWidgetItem(str(producto['preciopublico'])))
+                            self.tableventas.setItem(0, 6, QTableWidgetItem(str(producto['preciopublico'])))
+                            return 0
+                        else:
+                            alert(title='Producto insuficiente',text='La cantidad solicitada es mayor a la existencia')
+                            return 0
+        except:
+            alert(title='Error!',text='Revise la conexion con la red')
+            return 0        
+    def buscarName(self,busqueda,index):
+        coincidencias=self.con.FindProducts2(busqueda)
+        try:
+            longitud=len(coincidencias)
+            if longitud==0:
+                alert(title='Sin resultados!',text='Producto no encontrado')
+                return 0
+            if not self.estabuscando:
+                self.tableventas.setColumnHidden(4, True)
+                self.tableventas.setColumnHidden(6, True)
+                self.tableventas.setStyleSheet("border: 2px solid green; font-size: 15px;")
+                self.estabuscando=True
+                self.botcancelar.setEnabled(True)
+                self.carritos.setEnabled(False)
+                self.botvender.setEnabled(False)
+            self.tableventas.setRowCount(0)
+            for i in  range(longitud):
+                self.tableventas.insertRow(0)
+                self.tableventas.setItem(0, 0, QTableWidgetItem(str(coincidencias[i]['codigo'])))
+                self.tableventas.setItem(0, 1, QTableWidgetItem(str(coincidencias[i]['producto'])))
+                self.tableventas.setItem(0, 2, QTableWidgetItem(str(coincidencias[i]['grupo'])))
+                self.tableventas.setItem(0, 3, QTableWidgetItem(str(coincidencias[i]['stock'])))
+                self.tableventas.setItem(0, 4, QTableWidgetItem('0'))
+                self.tableventas.setItem(0, 5, QTableWidgetItem(str(coincidencias[i]['preciopublico'])))
+                self.tableventas.setItem(0, 6, QTableWidgetItem('0'))
+        except:
+            alert(title="Error!",text='Revisa la conexion a red')
+    def save(self):
+        
+        if not self.estabuscando:
+            index=self.tableventas.rowCount()
+            self.carrito=[]
+            for i in range(index):
+                producto = {}
+                producto['codigo'] = self.tableventas.item(i, 0).text()
+                producto['producto'] = self.tableventas.item(i, 1).text()
+                producto['grupo'] = self.tableventas.item(i, 2).text()
+                producto['stock'] = self.tableventas.item(i, 3).text()
+                producto['cantidad'] = self.tableventas.item(i, 4).text()
+                producto['preciopublico'] = self.tableventas.item(i, 5).text()
+                producto['importe'] = self.tableventas.item(i, 6).text()
+                self.carrito.append(producto)
+            print("Carrito")
+            for pro in self.carrito:
+                print (pro)
     def buscar(self):
         busqueda=str(self.busqueda.text())
+        self.busqueda.setText('')
         if busqueda=="":
             self.pago.setSelection(0,9999)
             self.pago.setFocus()
             return True
         index=self.tableventas.rowCount()
-        #print ('index='+str(index))
         self.enterBuscar()
+        self.busqueda.setFocus(True)
+        self.save()
         try:
-            #no borrar esta linea es para saber si se trata de un codigo o de el nombre de un producto
-            a=int(self.busqueda.text())
-            #este es para el caso de que encuentre el mismo producto en la tabla por medio de codigo
-            b=False
-            if self.estabuscando==False:
-                for i in range(index):
-                    #aqui se hace la comparación con los codigos para saber si ya existe
-                    if self.tableventas.item(i,0).text()==busqueda:
-                        #en caso de que si exista simplemente sumamos una unidad a cantidad en caso de no rebasar la existencia total del producto
-                        if float(self.tableventas.item(i,3).text())>float(self.tableventas.item(i,4).text()):
-                            cantidad = float(self.tableventas.item(i, 4).text())+1
-                            monto = round((cantidad) * float(self.tableventas.item(i,5).text()),2)
-                            self.tableventas.setItem(i, 4, QTableWidgetItem(str(cantidad)))
-                            self.tableventas.setItem(i, 6, QTableWidgetItem(str(monto)))
-                        else:
-                            alert(title='Existencia agotada!', text="La cantidad solicitada del producto excede la\n"
-                                                                    "existencia total del producto")
-                        self.cantidad.setEnabled(False)
-                        self.botquitar.setEnabled(False)
-                        b=True
-                        break
-                #en caso de que no lo encuentre
-
-                if not b:
-                    try:
-                        #aqui es para encontrarlo por primera vez con el codigo
-                        producto=self.con.GetProductByCode(busqueda)[0]
-                        if float(producto['stock'])>0:
-                            self.tableventas.insertRow(index)
-                            self.tableventas.setItem(index, 0, QTableWidgetItem(str(producto['codigo'])))
-                            self.tableventas.setItem(index, 1, QTableWidgetItem(str(producto['producto'])))
-                            self.tableventas.setItem(index, 2, QTableWidgetItem(str(producto['grupo'])))
-                            self.tableventas.setItem(index, 3, QTableWidgetItem(str(producto['stock'])))
-                            self.tableventas.setItem(index, 4, QTableWidgetItem('1'))
-                            self.tableventas.setItem(index, 5, QTableWidgetItem(str(producto['preciopublico'])))
-                            self.tableventas.setItem(index, 6, QTableWidgetItem(str(producto['preciopublico'])))
-                            self.cantidad.setEnabled(False)
-                            self.botquitar.setEnabled(False)
-                        else:
-                            alert(title='Producto agotado!',text=producto['producto']+' debe de ser surtido')                        #self.tableventas.item(index,2).flags(QtCore.Qt.ItemIsEditable)
-                    except:
-                        self.cantidad.setEnabled(False)
-                        self.botquitar.setEnabled(False)
-                        alert(title='Error!', text='Producto no encontrado')
-                self.calculaMontototal()
-
+            a=int(busqueda)
+            iscode=True
         except:
-            #se ejecuta este codigo en caso de que sea el nombre del producto
-            busqueda=self.busqueda.text().lower()
-            encontrados=self.con.FindProducts2(busqueda)
-            if len(encontrados)>0:
-                self.carritos.setEnabled(False)
-                #reiniciamos el carrito para que se llene con los datos actuales
-                self.tableventas.setStyleSheet(self.trueValidate)
-                self.carrito=[]
-                numrenglones=self.tableventas.rowCount()
-                #ahora llenamos el carrito con los datos
-                for i in range(numrenglones):
-                    producto={}
-                    producto['codigo']=self.tableventas.item(i,0).text()
-                    producto['producto']=self.tableventas.item(i,1).text()
-                    producto['grupo']=self.tableventas.item(i,2).text()
-                    producto['stock']=self.tableventas.item(i,3).text()
-                    producto['cantidad']=self.tableventas.item(i,4).text()
-                    producto['preciopublico']=self.tableventas.item(i,5).text()
-                    producto['importe']=self.tableventas.item(i,6).text()
-                    self.carrito.append(producto)
-                #Vaciamos la tabla
-                for i in range(numrenglones):
-                    self.tableventas.removeRow(0)
-                #Actualizamos los headers de la tabla para insertar la informacion con la de los productos que coinciden con la busqueda
-                self.tableventas.setColumnCount(5)
-                labels = ('Código', 'Producto', 'Grupo', 'Existencia', 'Precio/unidad')
-                self.tableventas.setHorizontalHeaderLabels(labels)
-                header = self.tableventas.horizontalHeader()
-                header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(1, QHeaderView.Stretch)
-                header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-                header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-                for i in range(len(encontrados)):
-                    self.tableventas.insertRow(i)
-                    self.tableventas.setItem(i, 0, QTableWidgetItem(str(encontrados[i]['codigo'])))
-                    self.tableventas.setItem(i, 1, QTableWidgetItem(str(encontrados[i]['producto'])))
-                    self.tableventas.setItem(i, 2, QTableWidgetItem(str(encontrados[i]['grupo'])))
-                    self.tableventas.setItem(i, 3, QTableWidgetItem(str(encontrados[i]['stock'])))
-                    self.tableventas.setItem(i, 4, QTableWidgetItem(str(encontrados[i]['preciopublico'])))
-                self.tableventas.setCurrentCell(self.tableventas.rowCount(),0)
-                self.tableventas.setFocus()
-                self.estabuscando = True
-            else:
-                alert(title="Error",text='Producto no encontrado')
-                self.cantidad.setEnabled(False)
-                self.botquitar.setEnabled(False)
+            iscode=False
+           
+        if iscode:
+            self.buscarCode(busqueda,index)
+        else:
+            self.buscarName(busqueda,index)
         self.tableventas.scrollToItem(self.tableventas.item(self.tableventas.rowCount(),0))
     def ayudaAbonar(self):
         alert(title="Ayuda",text='Despliega una ventana en donde se muestra la información\n'
@@ -607,7 +674,7 @@ class ViewVentas(QMainWindow):
                                  '1.- Seleccionar el producto de la lista\n'
                                  '2.- Presionar el botón "Quitar producto"')
     def ayudaGuardarCarro(self):
-        alert(title='Ayuda',text='Para poner en cola un carrito de coompra sólo presionar\n'
+        alert(title='Ayuda',text='Para poner en cola un carrito de compra sólo presionar\n'
                                  'el botón de "Guardar carro", el carrito se guardará en el sistema,\n'
                                  'para posteriormente renaudar con el proceso de venta de ese carro\n'
                                  'basta con seleccionarlo de la lista en la parte inferior izquierda\n'

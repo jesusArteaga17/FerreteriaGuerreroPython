@@ -33,6 +33,9 @@ QPushButton{
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="botoneditar">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>1038</x>
@@ -188,6 +191,9 @@ QPushButton{
     </layout>
    </widget>
    <widget class="QPushButton" name="botonsurtir">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>1040</x>
@@ -229,10 +235,17 @@ QPushButton{
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">*{font: 75 14pt &quot;Arial Unicode MS&quot;}</string>
+        <string notr="true">QTableView,QListView::section {
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
+	
+}*{font: 75 14pt &quot;Arial Unicode MS&quot;}</string>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
        </property>
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
@@ -277,15 +290,16 @@ QPushButton{
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLabel" name="label_8">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QPushButton" name="botquitarmostrar">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
          </property>
          <property name="text">
-          <string/>
+          <string>Quitar/Mostar columnas</string>
          </property>
         </widget>
        </item>

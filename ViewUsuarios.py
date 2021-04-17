@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import  QShortcut ,QTableWidgetItem,QDialog,QHeaderView
+from PyQt5.QtWidgets import  QShortcut ,QTableWidgetItem,QDialog,QHeaderView,QAbstractItemView,QMenu,QActionGroup,QAction
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import Qt
 from pymsgbox import *
 import sys
 class ViewUsuarios(QDialog):
@@ -58,6 +59,22 @@ class ViewUsuarios(QDialog):
         header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
+        #Configuracion de la tabla
+        # configuacion del manu contextual
+        self.tableUsuarios.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableUsuarios.customContextMenuRequested.connect(self.menuContextual)
+        # Seleccionar toda la fila
+        self.tableUsuarios.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        # Seleccionar una fila a la vez
+        self.tableUsuarios.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableUsuarios.setColumnHidden(0, True)
+        self.tableUsuarios.setColumnHidden(3, True)
+        self.tableUsuarios.setColumnHidden(4, True)
+        self.tableUsuarios.setColumnHidden(5, True)
+        self.tableUsuarios.setColumnHidden(6, True)
+        self.tableUsuarios.setColumnHidden(7, True)
+        self.tableUsuarios.setColumnHidden(8, True)
         #Definiendo los atajos
         shortcut1 = QShortcut(QKeySequence("Ctrl+b"), self)
         shortcut1.activated.connect(self.setFocusBuscar)
@@ -70,6 +87,18 @@ class ViewUsuarios(QDialog):
         #shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
         #shortcut5.activated.connect(self.close)
         self.RefreshTableData()
+    def menuContextual(self, posicion):
+        indices = self.tableUsuarios.selectedIndexes()
+        if indices:
+            index=self.tableUsuarios.currentRow()
+            if self.tableUsuarios.item(index,1).text()=="Administrador":
+                return 0
+            menu = QMenu()
+            itemsGrupo = QActionGroup(self)
+            itemsGrupo.setExclusive(True)
+            menu.addAction(QAction("Eliminar", itemsGrupo))
+            itemsGrupo.triggered.connect(self.elimina)
+            menu.exec_(self.tableUsuarios.viewport().mapToGlobal(posicion))
     def agrega(self):
         if self.valida_formulario():
             opc = confirm(text="Desea agregar " + str(self.usuario.text()) + "?", title="Agregar?",
@@ -126,16 +155,17 @@ class ViewUsuarios(QDialog):
                     usuario['clientes'] = self.clientes.isChecked()
                     usuario['creditos'] = self.creditos.isChecked()
                     usuario['ventas'] = self.ventas.isChecked()
+                    for i in range(len(self.inputs)):
+                        try:
+                            self.inputs[i].setChecked(False)
+                        except:
+                            self.inputs[i].setText("")
+                    self.boteditar.setEnabled(False)
+                    self.boteliminar.setEnabled(False)
+                    self.RefreshTableData()
                     if self.con.UpdateUser(id,usuario):
                         #alert(title="Correcto!", text="Operación correcta!")
-                        for i in range(len(self.inputs)):
-                            try:
-                                self.inputs[i].setChecked(False)
-                            except:
-                                self.inputs[i].setText("")
-                        self.boteditar.setDisabled(True)
-                        self.boteliminar.setDisabled(True)
-                        self.RefreshTableData()
+                        pass
                     else:
                         alert(title="Error", text="Revise que el servicdor XAMPP este activo")
                 else:

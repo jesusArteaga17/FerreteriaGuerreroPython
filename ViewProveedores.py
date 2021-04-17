@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import   QTableWidgetItem,QMainWindow,QHeaderView
+from PyQt5.QtWidgets import   QTableWidgetItem,QMainWindow,QHeaderView,QMenu,QActionGroup,QAction,QAbstractItemView
 #from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import Qt
 from pymsgbox import *
 from datetime import datetime
 import sys
@@ -58,12 +59,22 @@ class ViewProveedores(QMainWindow):
         #Inicialización de los eventos de las tablas
         self.tablaproveedores.clicked.connect(self.rowClicked)
         self.tablaeventos.clicked.connect(self.rowClicked2)
+        self.tablaproveedores.setColumnHidden(0, True)
+        self.tablaeventos.setColumnHidden(0, True)
+        # Seleccionar toda la fila
+        self.tablaproveedores.setSelectionBehavior(QAbstractItemView.SelectRows)
+        # Seleccionar una fila a la vez
+        self.tablaproveedores.setSelectionMode(QAbstractItemView.SingleSelection)
+        # configuacion del manu contextual
+        self.tablaproveedores.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tablaproveedores.customContextMenuRequested.connect(self.menuContextual)
         #configuracion de la cabecera de mi tabla
         tablaProveedores = self.tablaproveedores.horizontalHeader()
         tablaProveedores.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         tablaProveedores.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         tablaProveedores.setSectionResizeMode(2, QHeaderView.ResizeToContents)
         tablaProveedores.setSectionResizeMode(3, QHeaderView.Stretch)
+
 
         tablaEventos = self.tablaeventos.horizontalHeader()
         tablaEventos.setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -88,6 +99,19 @@ class ViewProveedores(QMainWindow):
         shortcut4.activated.connect(self.elimina)
         shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
         shortcut5.activated.connect(self.close)"""
+    def menuContextual(self, posicion):
+        indices = self.tablaproveedores.selectedIndexes()
+        if indices:
+            menu = QMenu()
+            itemsGrupo = QActionGroup(self)
+            itemsGrupo.setExclusive(True)
+            agend = QActionGroup(self)
+            agend.setExclusive(True)
+            menu.addAction(QAction("Eliminar", itemsGrupo))
+            menu.addAction(QAction("Agendar", agend))
+            itemsGrupo.triggered.connect(self.elimina)
+            agend.triggered.connect(self.agendar)
+            menu.exec_(self.tablaproveedores.viewport().mapToGlobal(posicion))
     def agrega(self):
         if self.valida_formulario():
             opc = confirm(text="Desea agregar " + str(self.nombre.text()) + "?", title="Agregar?",

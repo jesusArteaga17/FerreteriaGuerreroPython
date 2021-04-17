@@ -84,6 +84,12 @@ QPushButton{
       <property name="statusTip">
        <string/>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QTableView,QListView::section {
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
+}</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
@@ -164,6 +170,13 @@ QPushButton{
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_cantidad">
         <property name="enabled">
          <bool>false</bool>
@@ -220,7 +233,7 @@ QPushButton{
          <bool>false</bool>
         </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>

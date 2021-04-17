@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import  QDialog,QTableWidgetItem,QHeaderView
+from PyQt5.QtWidgets import  QDialog,QTableWidgetItem,QHeaderView,QMenu,QAction
 from PyQt5 import uic,QtCore
 from datetime import datetime
 import sys,os
@@ -32,12 +32,12 @@ class ViewHistorial(QDialog):
         header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
         self.ventasview=True
-
         self.folio_venta_selected=0
         date = datetime.now()
         self.fecha.setDate(QtCore.QDate(date.year,date.month,date.day))
         self.fecha.dateChanged.connect(self.RefreshTableData)
         self.RefreshTableData()
+
     def val_cantidad(self):
         text=self.cantidad.text()
         index=self.tableventas.currentRow()

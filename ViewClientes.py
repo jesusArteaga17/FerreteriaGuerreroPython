@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView
+from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView,QMenu,QActionGroup,QAction,QAbstractItemView
 from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import Qt
 from pymsgbox import *
 import sys
 from emergente_creditos import EmergenteCreditos
@@ -65,9 +66,10 @@ class ViewClientes(QMainWindow):
         self.busqueda.textChanged.connect(self.buscar)
         self.busqueda.setFocus()
         #Inicialización de los eventos de la tabla
-        self.tableClient.clicked.connect(self.rowClicked)
+        self.tableClient.itemSelectionChanged.connect(self.rowClicked)
         self.tableCredit.clicked.connect(self.rowClicked2)
         #configuracion de la cabecera de mi tabla
+
         header = self.tableClient.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
@@ -76,6 +78,16 @@ class ViewClientes(QMainWindow):
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(6,QHeaderView.Stretch )
+        self.tableClient.setColumnHidden(0, True)
+        # configuacion del manu contextual
+        self.tableClient.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableClient.customContextMenuRequested.connect(self.menuContextual)
+        # Seleccionar toda la fila
+        self.tableClient.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        # Seleccionar una fila a la vez
+        self.tableClient.setSelectionMode(QAbstractItemView.SingleSelection)
+
 
         header = self.tableCredit.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -84,6 +96,7 @@ class ViewClientes(QMainWindow):
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.tableCredit.setColumnHidden(0,True)
         #lista de los inputs disponibles en la vista de Clientes
         self.inputs = [self.nombre, self.apellidos, self.rfc, self.telefono,self.correo,self.direccion]
         self.RefreshTableData()
@@ -96,6 +109,29 @@ class ViewClientes(QMainWindow):
         shortcut4.activated.connect(self.elimina)
         #shortcut5 = QShortcut(QtGui.QKeySequence("Esc"), self)
         #shortcut5.activated.connect(self.close)
+    def menuContextual(self, posicion):
+        indices = self.tableClient.selectedIndexes()
+        if indices:
+            menu = QMenu()
+            itemsGrupo = QActionGroup(self)
+            itemsGrupo.setExclusive(True)
+            edit = QActionGroup(self)
+            edit.setExclusive(True)
+            menu.addAction(QAction("Eliminar", itemsGrupo))
+            menu.addAction(QAction("Dar credito", edit))
+            itemsGrupo.triggered.connect(self.elimina)
+            edit.triggered.connect(self.DarCredito)
+            menu.exec_(self.tableClient.viewport().mapToGlobal(posicion))
+    def Clean(self):
+        self.nombre.setText('')
+        self.apellidos.setText('')
+        self.rfc.setText('')
+        self.telefono.setText('')
+        self.correo.setText('')
+        self.direccion.setText('')
+        self.boteditar.setEnabled(False)
+        self.boteliminar.setEnabled(False)
+        self.botcredito.setEnabled(False)
     def agrega(self):
         if self.valida_formulario():
             opc = confirm(text="Desea agregar " + str(self.nombre.text()) + "?", title="Agregar?",
@@ -113,9 +149,7 @@ class ViewClientes(QMainWindow):
                         self.inputs[i].setText("")
                     self.RefreshTableData()
                     #alert(text='Se agregó correctamente', title='Operación exitosa!', button='OK')
-                    self.boteditar.setDisabled(True)
-                    self.boteliminar.setDisabled(True)
-                    self.botcredito.setDisabled(True)
+                    self.Clean()
                 else:
                     alert(title="Error de servidor", text="Ocurrió un error en el servidor", button="OK")
         else:
@@ -139,9 +173,7 @@ class ViewClientes(QMainWindow):
                         self.inputs[i].setText("")
                     self.RefreshTableData()
                     #alert(text='Se editó correctamente', title='Operación exitosa!', button='OK')
-                    self.boteditar.setDisabled(True)
-                    self.boteliminar.setDisabled(True)
-                    self.botcredito.setDisabled(True)
+                    self.Clean()
                 else:
                     alert(title="Error de servidor", text="Ocurrió un error en el servidor", button="OK")
         else:
@@ -162,9 +194,7 @@ class ViewClientes(QMainWindow):
                         self.RefreshTableData()
                     except:
                         pass
-                    self.boteditar.setDisabled(True)
-                    self.boteliminar.setDisabled(True)
-                    self.botcredito.setDisabled(True)
+                    self.Clean()
                 else:
                     alert(title="Error en el servidor!",text="Asegurese que el servidor XAMPP este activo",button="OK")
         except:
@@ -313,7 +343,7 @@ class ViewClientes(QMainWindow):
             return False
     def valApellidos(self):
         input = self.apellidos
-        if len(input.text()) <= 100 and input.text() != "":
+        if len(input.text()) <= 100:
             input.setStyleSheet(self.trueValidate)
             return True
         else:
@@ -321,7 +351,7 @@ class ViewClientes(QMainWindow):
             return False
     def valRfc(self):
         input = self.rfc
-        if self.valida.validaRfc(input.text()) or input.text()!="":
+        if len(input.text())<21:
             input.setStyleSheet(self.trueValidate)
             return True
         else:
@@ -337,7 +367,7 @@ class ViewClientes(QMainWindow):
             return False
     def valCorreo(self):
         input = self.correo
-        if len(input.text()) <= 100 and self.valida.validaCorreo(input.text()):
+        if len(input.text()) <= 100:
             input.setStyleSheet(self.trueValidate)
             return True
         else:

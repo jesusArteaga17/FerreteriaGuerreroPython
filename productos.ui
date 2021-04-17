@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1348</width>
-    <height>692</height>
+    <width>1343</width>
+    <height>691</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,71 +33,27 @@ QPushButton{
 *{font: 75 13pt &quot;Arial Unicode MS&quot;}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>1040</x>
-      <y>380</y>
-      <width>301</width>
-      <height>271</height>
+      <x>940</x>
+      <y>11</y>
+      <width>391</width>
+      <height>641</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="label_9">
-       <property name="font">
-        <font>
-         <family>Arial Unicode MS</family>
-         <pointsize>13</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Productos en stock mínimo</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTableWidget" name="tablestockminimo">
-       <property name="sortingEnabled">
-        <bool>false</bool>
-       </property>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Producto</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Stock min</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Existencia</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>1040</x>
-      <y>10</y>
-      <width>301</width>
-      <height>261</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
        <item>
         <widget class="QLineEdit" name="busqueda">
          <property name="font">
@@ -129,8 +85,17 @@ QPushButton{
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout">
+       <property name="verticalSpacing">
+        <number>1</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -154,6 +119,12 @@ QPushButton{
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -177,6 +148,12 @@ QPushButton{
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -196,6 +173,12 @@ QPushButton{
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -219,6 +202,12 @@ QPushButton{
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -242,6 +231,12 @@ QPushButton{
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="label_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>Arial Unicode MS</family>
@@ -272,6 +267,12 @@ QPushButton{
        </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_12">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Precio público</string>
          </property>
@@ -279,170 +280,249 @@ QPushButton{
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+         <item>
+          <widget class="QPushButton" name="botonagregar">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Unicode MS</family>
+             <pointsize>13</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Agregar</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/plus_circle_new_create_icon_145948.png</normaloff>icons/plus_circle_new_create_icon_145948.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="botonayudaadd">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Unicode MS</family>
+             <pointsize>13</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>22</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="botoneditar">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Unicode MS</family>
+             <pointsize>13</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Editar</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="botonayudaedit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>22</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="botoneliminar">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Unicode MS</family>
+             <pointsize>13</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Eliminar</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/trash_remove_icon_145922.png</normaloff>icons/trash_remove_icon_145922.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="botonayudadelete">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>22</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial Unicode MS</family>
+           <pointsize>13</pointsize>
+           <weight>9</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Productos en stock mínimo</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tablestockminimo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Producto</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Stock min</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Existencia</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget_3">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>1040</x>
-      <y>280</y>
-      <width>271</width>
-      <height>99</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="botonagregar">
-       <property name="font">
-        <font>
-         <family>Arial Unicode MS</family>
-         <pointsize>13</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Agregar</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/plus_circle_new_create_icon_145948.png</normaloff>icons/plus_circle_new_create_icon_145948.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botoneditar">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="font">
-        <font>
-         <family>Arial Unicode MS</family>
-         <pointsize>13</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Editar</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</normaloff>icons/pencil-striped-symbol-for-interface-edit-buttons_icon-icons.com_56782.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botoneliminar">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="font">
-        <font>
-         <family>Arial Unicode MS</family>
-         <pointsize>13</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Eliminar</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/trash_remove_icon_145922.png</normaloff>icons/trash_remove_icon_145922.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget_4">
-    <property name="geometry">
-     <rect>
-      <x>1310</x>
-      <y>280</y>
-      <width>31</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="botonayudaadd">
-       <property name="font">
-        <font>
-         <family>Arial Unicode MS</family>
-         <pointsize>13</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>22</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botonayudaedit">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>22</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botonayudadelete">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/help_question_1566.png</normaloff>icons/help_question_1566.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>22</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>1021</width>
+      <x>11</x>
+      <y>11</y>
+      <width>921</width>
       <height>641</height>
      </rect>
     </property>
@@ -460,7 +540,8 @@ QPushButton{
        </property>
        <property name="styleSheet">
         <string notr="true">QTableView,QListView::section {
-Background-color:rgb(255, 255, 255);
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
 }</string>
        </property>
        <property name="editTriggers">
@@ -489,7 +570,7 @@ Background-color:rgb(255, 255, 255);
        </attribute>
        <column>
         <property name="text">
-         <string>Código</string>
+         <string notr="true">Código</string>
         </property>
        </column>
        <column>
@@ -504,22 +585,22 @@ Background-color:rgb(255, 255, 255);
        </column>
        <column>
         <property name="text">
-         <string>Stock/mín</string>
+         <string>Exi</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Stock/máx</string>
+         <string>Precio</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Existencia</string>
+         <string>Mín</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Precio al público</string>
+         <string>Máx</string>
         </property>
        </column>
       </widget>
@@ -527,15 +608,9 @@ Background-color:rgb(255, 255, 255);
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="label_8">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QPushButton" name="botquitarmostrar">
          <property name="text">
-          <string/>
+          <string>Quitar/Mostrar columnas</string>
          </property>
         </widget>
        </item>
@@ -685,7 +760,7 @@ Background-color:rgb(255, 255, 255);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1348</width>
+     <width>1343</width>
      <height>29</height>
     </rect>
    </property>

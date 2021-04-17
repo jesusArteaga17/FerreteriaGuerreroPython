@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView
+from PyQt5.QtWidgets import   QTableWidgetItem,QShortcut,QMainWindow,QHeaderView,QMenu,QAction
 from PyQt5.QtGui import QKeySequence
 from PyQt5.uic import loadUi
 from pymsgbox import *
@@ -61,6 +61,20 @@ class ViewInventario(QMainWindow):
         tablaProductos.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         #lista de los inputs disponibles en la vista de productos
         self.inputs = [self.stockminimo,self.stockmaximo,self.stock]
+        # Configuracion del selector de columnas
+        nombreColumnas = []
+        for i in range(self.tablaproductos.columnCount()):
+            nombreColumnas.append(self.tablaproductos.horizontalHeaderItem(i).text())
+        menu = QMenu()
+        for indice, columna in enumerate(nombreColumnas, start=0):
+            accion = QAction(columna, menu)
+            accion.setCheckable(True)
+            accion.setChecked(True)
+            accion.setData(indice)
+
+            menu.addAction(accion)
+        menu.triggered.connect(self.mostrarOcultar)
+        self.botquitarmostrar.setMenu(menu)
         #agregamos los proveedores a las listas
         self.proveedores=self.con.AllProveedores()
         for i in range(len(self.proveedores)):
@@ -84,6 +98,13 @@ class ViewInventario(QMainWindow):
         shortcut3.activated.connect(self.edita)
         shortcut5 = QShortcut(QKeySequence("Esc"), self)
         shortcut5.activated.connect(self.close)
+    def mostrarOcultar(self, accion):
+        columna = accion.data()
+
+        if accion.isChecked():
+            self.tablaproductos.setColumnHidden(columna, False)
+        else:
+            self.tablaproductos.setColumnHidden(columna, True)
 
     def surtir(self):
         if self.valCantidadadquirida() and self.valPreciopublico():
@@ -151,6 +172,7 @@ class ViewInventario(QMainWindow):
                         self.proveedor2.setCurrentIndex(i+1)
             self.botoneditar.setDisabled(False)
             self.botonsurtir.setDisabled(False)
+            self.cantidadadquirida.setFocus()
         except:
             print('ocurrio un error no mms')
     def valStockminimo(self):

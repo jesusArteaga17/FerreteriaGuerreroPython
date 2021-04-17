@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
+    <width>779</width>
     <height>517</height>
    </rect>
   </property>
@@ -42,34 +42,21 @@ QPushButton{
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>911</width>
+     <width>441</width>
      <height>491</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <family>Arial Unicode MS</family>
-        <pointsize>12</pointsize>
-        <weight>9</weight>
-        <italic>false</italic>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Usuarios</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QTableWidget" name="tableUsuarios">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTableView,QListView::section {
+	Background-color:rgb(255, 255, 255);
+	alternate-background-color:rgb(200, 167, 255);	
+}</string>
       </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
@@ -135,9 +122,9 @@ QPushButton{
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>931</x>
+     <x>461</x>
      <y>59</y>
-     <width>231</width>
+     <width>301</width>
      <height>441</height>
     </rect>
    </property>
@@ -379,6 +366,9 @@ QPushButton{
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QPushButton" name="boteditar">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Editar</string>
           </property>
@@ -407,6 +397,9 @@ QPushButton{
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QPushButton" name="boteliminar">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Eliminar</string>
           </property>
@@ -438,9 +431,9 @@ QPushButton{
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>940</x>
+     <x>470</x>
      <y>20</y>
-     <width>216</width>
+     <width>281</width>
      <height>29</height>
     </rect>
    </property>
